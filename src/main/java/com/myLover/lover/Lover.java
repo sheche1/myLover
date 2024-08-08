@@ -7,17 +7,14 @@ public class Lover {
     private String fristname;
     private String lastName;
     private LocalDate fristDay;
-    private Integer daysWith;
     private LocalDate birthday;
     private List<importanteDate> importanteDates;
 
-
-    public Lover(String fristname, String lastName, LocalDate fristDay, Integer daysWith, LocalDate birthday,
+    public Lover(String fristname, String lastName, LocalDate fristDay, LocalDate birthday,
             List<importanteDate> importanteDates) {
         this.fristname = fristname;
         this.lastName = lastName;
         this.fristDay = fristDay;
-        this.daysWith = daysWith;
         this.birthday = birthday;
         this.importanteDates = importanteDates;
     }
@@ -39,12 +36,6 @@ public class Lover {
     public void setFristDay(LocalDate fristDay) {
         this.fristDay = fristDay;
     }
-    public Integer getDaysWith() {
-        return daysWith;
-    }
-    public void setDaysWith(Integer daysWith) {
-        this.daysWith = daysWith;
-    }
     public LocalDate getBirthday() {
         return birthday;
     }
@@ -57,8 +48,6 @@ public class Lover {
     public void setImportanteDates(List<importanteDate> importanteDates) {
         this.importanteDates = importanteDates;
     }
-
-    
 
 
 }
