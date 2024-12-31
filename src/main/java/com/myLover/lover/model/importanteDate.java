@@ -1,4 +1,4 @@
-package com.myLover.lover;
+package com.myLover.lover.model;
 
 import java.time.LocalDate;
 
