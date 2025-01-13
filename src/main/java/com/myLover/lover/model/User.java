@@ -1,8 +1,6 @@
 package com.myLover.lover.model;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,15 +13,14 @@ public class User{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "El nombre es obligatorio")
-    private String name;
-
-    @NotNull(message = "El correo es obligatorio")
-    @Email(message = "Debe ser un correo válido")
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @NotNull(message = "La contraseña es obligatoria")
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    private String name;
 
 
 
