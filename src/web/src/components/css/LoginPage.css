@@ -1,0 +1,73 @@
+/* Contenedor principal */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to bottom, #ff7e5f, #feb47b);
+    font-family: 'Arial', sans-serif;
+}
+
+/* Caja de formulario */
+.login-box {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Título */
+.login-title {
+    font-size: 2rem;
+    color: #ff6b6b;
+    margin-bottom: 20px;
+}
+
+/* Grupo de entrada */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Campo de entrada */
+.input-field {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.input-field:focus {
+    border-color: #ff6b6b;
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+}
+
+/* Botón de inicio de sesión */
+.login-button {
+    background-color: #ff6b6b;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    width: 100%;
+}
+
+.login-button:hover {
+    background-color: #ff8787;
+    transform: scale(1.05);
+}
+
+/* Mensaje de error */
+.error-message {
+    margin-top: 15px;
+    color: red;
+    font-size: 0.9rem;
+}
