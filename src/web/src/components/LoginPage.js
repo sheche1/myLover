@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './css/LoginPage.css';
 
 function LoginPage({ onLogin }) {
@@ -57,6 +58,11 @@ function LoginPage({ onLogin }) {
                     <button type="submit" className="login-button">Iniciar Sesión</button>
                 </form>
                 {errorMessage && <p className="error-message">{errorMessage}</p>}
+                {/* Agrega el botón para navegar al registro */}
+                <p className="navigate-to-register">
+                    ¿No tienes cuenta?{' '}
+                    <Link to="/register" className="register-link">Crear una cuenta</Link>
+                </p>
             </div>
         </div>
     );

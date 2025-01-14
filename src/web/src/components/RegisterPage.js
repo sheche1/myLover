@@ -1,52 +1,49 @@
 import React, { useState } from 'react';
+import './css/RegisterPage.css'; 
 
 function RegisterPage() {
-
-    const [formData, setFormDaata] = useState({
-        email:'',
-        password:'',
-        name:'',
-
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+        name: '',
     });
-    const [message , setMessage] = useState('');
+    const [message, setMessage] = useState('');
 
-    const handleChange = (e) =>{
-        setFormDaata({
+    const handleChange = (e) => {
+        setFormData({
             ...formData,
-            [e.target.name]:e.target.value,
+            [e.target.name]: e.target.value,
         });
     };
 
-    const handleSubmit= async(e) =>{
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage('');
 
-        try{
-            const response = await fetch('http://localhost:8080/api/auth/register',
-                {
-                    method: 'POST',
-                    headers: {'Content-Type':'application/json'},
-                    body:JSON.stringify(formData),
-                }
-            );
-            if(response.ok){
-                const data = await response.json();
-                setMessage('Registro exitoso!Ahora puedes iniciar sesión');
-            }else{
-                const errordata = await response.json();
-                setMessage(`Error:${errordata.message ||'Algo salió mal'}`);
+        try {
+            const response = await fetch('http://localhost:8080/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
+            if (response.ok) {
+                setMessage('¡Registro exitoso! Ahora puedes iniciar sesión.');
+            } else {
+                const errorData = await response.json();
+                setMessage(`Error: ${errorData.message || 'Algo salió mal'}`);
             }
-        }catch(error){
-            console.error('Error duante el registro:',error);
+        } catch (error) {
+            console.error('Error durante el registro:', error);
             setMessage('Error al conectar con el servidor.');
         }
     };
 
     return (
-        <div style={{textAlign:'center',marginTop:'50px'}}>
-                <h2>Registro</h2>
+        <div className="register-container">
+            <div className="register-box">
+                <h2 className="register-title">Registro</h2>
                 <form onSubmit={handleSubmit}>
-                    <div>
+                    <div className="form-group">
                         <input
                             type="text"
                             name="name"
@@ -54,34 +51,38 @@ function RegisterPage() {
                             value={formData.name}
                             onChange={handleChange}
                             required
-                            style={{marginBottom:'10px',padding:'10px',width:'300px'}}
+                            className="input-field"
                         />
                     </div>
-                    <div>
-                    <input
+                    <div className="form-group">
+                        <input
                             type="email"
                             name="email"
                             placeholder="Correo electrónico"
                             value={formData.email}
                             onChange={handleChange}
                             required
-                            style={{marginBottom:'10px',padding:'10px',width:'300px'}}
+                            className="input-field"
                         />
                     </div>
-                    <div>
-                    <input
+                    <div className="form-group">
+                        <input
                             type="password"
                             name="password"
                             placeholder="Contraseña"
                             value={formData.password}
                             onChange={handleChange}
                             required
-                            style={{marginBottom:'10px',padding:'10px',width:'300px'}}
+                            className="input-field"
                         />
                     </div>
-                    <button type="submit" style={{padding:'10px 20px',frotSize:'16px'}}>Registrar</button>
+                    <button type="submit" className="register-button">Registrar</button>
                 </form>
-                {message && <p style={{marginTop:'20px',color:'red'}}>{message}</p>}
+                {message && <p className="register-message">{message}</p>}
+                <p className="navigate-to-login">
+                    ¿Ya tienes una cuenta? <a href="/login" className="login-link">Inicia sesión</a>
+                </p>
+            </div>
         </div>
     );
 }

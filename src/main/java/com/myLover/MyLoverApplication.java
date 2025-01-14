@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = "com.myLover.lover.repository")
 @EntityScan(basePackages = "com.myLover.lover.model")
 public class MyLoverApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(MyLoverApplication.class, args);
 	}
