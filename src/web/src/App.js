@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
+import CalendarPage from './components/CalendarPage';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -27,6 +28,12 @@ function App() {
     return (
         <Router>
             <Routes>
+                {/* Pagina de error 404*/}
+                <Route
+                    path="*"
+                    element={<h1 style={{ textAlign: 'center' }}>404 - Página no encontrada</h1>}
+                />
+
                 {/* Ruta de inicio de sesión */}
                 <Route
                     path="/login"
@@ -35,12 +42,18 @@ function App() {
                 {/* Ruta para registrar */}
                 <Route
                     path="/register"
-                    element={<RegisterPage/>}
+                    element={isAuthenticated ? <Navigate to="/" /> : <RegisterPage />}
                 />
+
                 {/* Ruta de la página principal */}
                 <Route
                     path="/"
                     element={isAuthenticated ? <HomePage onLogout={handleLogout} /> : <Navigate to="/login" />}
+                />
+                {/* Ruta del calendario */}
+                <Route
+                    path="/calendar"
+                    element={isAuthenticated ? <CalendarPage /> : <Navigate to="/login" />}
                 />
             </Routes>
         </Router>

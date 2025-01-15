@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate para la navegación
 
 function HomePage({ onLogout }) {
+    const navigate = useNavigate(); // Hook para navegar entre rutas
+
     // Estilos en línea para el fondo
     const backgroundStyle = {
         backgroundImage: 'url(/imagenes/background.jpg)', // Ruta absoluta desde public
@@ -46,9 +49,10 @@ function HomePage({ onLogout }) {
         <div style={backgroundStyle}>
             <div style={contentBoxStyle}>
                 <h1 style={{ color: '#ff6b6b', fontWeight: 'bold', marginBottom: '15px' }}>Bienvenidos a MyLover!</h1>
-                <p style={{ color: '#555', lineHeight: '1.6' }}>
+                <p style={{ color: '#555', lineHeight: '1.6', marginBottom: '20px' }}>
                     Este es un lugar especial para nosotros, para recordar y planificar nuestro futuro juntos.
                 </p>
+
                 <div>
                     <button
                         style={buttonStyle}
@@ -62,15 +66,15 @@ function HomePage({ onLogout }) {
                         style={buttonStyle}
                         onMouseEnter={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}
                         onMouseLeave={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
-                        onClick={() => alert('Ver Calendario')}
+                        onClick={() => navigate('/calendar')} // Redirige a la página del calendario
                     >
                         Ver Calendario 
                     </button>
                     <button 
-                    style={buttonStyle}
-                    onMouseEnter={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}
-                    onMouseLeave={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
-                    onClick={onLogout}>
+                        style={buttonStyle}
+                        onMouseEnter={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}
+                        onMouseLeave={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
+                        onClick={onLogout}>
                         Cerrar Sesión
                     </button>
                 </div>
@@ -78,5 +82,5 @@ function HomePage({ onLogout }) {
         </div>
     );
 }
-//
+
 export default HomePage;
