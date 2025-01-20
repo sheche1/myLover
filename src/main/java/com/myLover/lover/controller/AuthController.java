@@ -2,18 +2,15 @@ package com.myLover.lover.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import com.myLover.lover.model.AuthRequest;
 import com.myLover.lover.model.AuthResponse;
 import com.myLover.lover.model.User;
 import com.myLover.lover.service.AuthService;
 import com.myLover.lover.service.UserService;
 
+import java.util.HashMap;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -23,7 +20,7 @@ public class AuthController {
     private final AuthService authService;
     private final UserService userService;
 
-    public AuthController(AuthService authService,UserService userService) {
+    public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
         this.userService = userService;
     }
@@ -38,16 +35,17 @@ public class AuthController {
         }
     }
 
-
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user){
-        try{
-            User registeredUser  = userService.registerUser(user);
+        try {
+            User registeredUser = userService.registerUser(user);
             return ResponseEntity.ok(registeredUser);
-        }catch(Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch(Exception e) {
+            // Para que el front-end no reciba un texto plano, 
+            // devolvemos un objeto Map y Spring lo convierte a JSON.
+            Map<String, String> errorBody = new HashMap<>();
+            errorBody.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(errorBody);
         }
-
     }
-
 }

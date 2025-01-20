@@ -1,5 +1,6 @@
 package com.myLover.lover.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ public class AuthService {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
     public AuthService(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
@@ -23,15 +25,10 @@ public class AuthService {
         if (user == null) {
             throw new RuntimeException("Usuario no encontrado");
         }
-    
-        // Verifica que las contraseñas coincidan
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Credenciales incorrectas");
         }
-        
-        String token = "mock-jwt-token";
-        return new AuthResponse(token);
+        return new AuthResponse("mock-jwt-token");
     }
-    
-    
 }
+

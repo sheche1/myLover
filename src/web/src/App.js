@@ -4,56 +4,56 @@ import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import CalendarPage from './components/CalendarPage';
+import ProfilePage from './components/ProfilePage';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        const token = localStorage.getItem('token'); 
+        const token = localStorage.getItem('token');
         if (token) {
             setIsAuthenticated(true);
         }
     }, []);
 
     const handleLogin = (token) => {
-        localStorage.setItem('token', token); // Guarda el token
+        localStorage.setItem('token', token);
         setIsAuthenticated(true);
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('token'); // Elimina el token
+        localStorage.removeItem('token');
         setIsAuthenticated(false);
     };
-    
+
     return (
         <Router>
             <Routes>
-                {/* Pagina de error 404*/}
-                <Route
-                    path="*"
-                    element={<h1 style={{ textAlign: 'center' }}>404 - Página no encontrada</h1>}
+                <Route 
+                    path="/login" 
+                    element={isAuthenticated ? <Navigate to="/" /> : <LoginPage onLogin={handleLogin} />} 
                 />
-
-                {/* Ruta de inicio de sesión */}
-                <Route
-                    path="/login"
-                    element={isAuthenticated ? <Navigate to="/" /> : <LoginPage onLogin={handleLogin} />}
+                <Route 
+                    path="/register" 
+                    element={isAuthenticated ? <Navigate to="/" /> : <RegisterPage />} 
                 />
-                {/* Ruta para registrar */}
-                <Route
-                    path="/register"
-                    element={isAuthenticated ? <Navigate to="/" /> : <RegisterPage />}
+                <Route 
+                    path="/" 
+                    element={isAuthenticated ? <HomePage onLogout={handleLogout} /> : <Navigate to="/login" />} 
                 />
-
-                {/* Ruta de la página principal */}
-                <Route
-                    path="/"
-                    element={isAuthenticated ? <HomePage onLogout={handleLogout} /> : <Navigate to="/login" />}
+                <Route 
+                    path="/calendar" 
+                    element={isAuthenticated ? <CalendarPage /> : <Navigate to="/login" />} 
                 />
-                {/* Ruta del calendario */}
+                {/* Nueva ruta para el perfil */}
                 <Route
-                    path="/calendar"
-                    element={isAuthenticated ? <CalendarPage /> : <Navigate to="/login" />}
+                    path="/profile"
+                    element={isAuthenticated ? <ProfilePage /> : <Navigate to="/login" />}
+                />
+                {/* Ruta por defecto 404 */}
+                <Route 
+                    path="*" 
+                    element={<h1 style={{ textAlign: 'center' }}>404 - Página no encontrada</h1>} 
                 />
             </Routes>
         </Router>

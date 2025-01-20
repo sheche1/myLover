@@ -9,6 +9,8 @@ function LoginPage({ onLogin }) {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        localStorage.setItem('email', email);
+        localStorage.setItem('password', password);
         setErrorMessage('');
 
         try {
