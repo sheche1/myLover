@@ -40,4 +40,28 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return repository.save(user);
     }
+
+    public User sendFriendRequest(String senderEmail, String receiverEmail) {
+        User sender = repository.findUserByEmail(senderEmail).orElseThrow(() -> new RuntimeException("Sender not found"));
+        User receiver = repository.findUserByEmail(receiverEmail).orElseThrow(() -> new RuntimeException("Receiver not found"));
+        receiver.getFriendRequests().add(sender);
+        return repository.save(receiver);
+    }
+
+    public User acceptFriendRequest(String receiverEmail, String senderEmail) {
+        User receiver = repository.findUserByEmail(receiverEmail).orElseThrow(() -> new RuntimeException("Receiver not found"));
+        User sender = repository.findUserByEmail(senderEmail).orElseThrow(() -> new RuntimeException("Sender not found"));
+        receiver.getFriendRequests().remove(sender);
+        receiver.getFriends().add(sender);
+        sender.getFriends().add(receiver);
+        repository.save(sender);
+        return repository.save(receiver);
+    }
+
+    public User rejectFriendRequest(String receiverEmail, String senderEmail) {
+        User receiver = repository.findUserByEmail(receiverEmail).orElseThrow(() -> new RuntimeException("Receiver not found"));
+        User sender = repository.findUserByEmail(senderEmail).orElseThrow(() -> new RuntimeException("Sender not found"));
+        receiver.getFriendRequests().remove(sender);
+        return repository.save(receiver);
+    }
 }

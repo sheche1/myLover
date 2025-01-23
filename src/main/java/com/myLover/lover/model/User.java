@@ -2,6 +2,8 @@ package com.myLover.lover.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class User {
@@ -43,10 +45,29 @@ public class User {
     @Column(name = "first_meet_date", nullable = false)
     private LocalDate fechaPrimerEncuentro;
 
+    @ManyToMany
+    private List<User> friendRequests = new ArrayList<>();
+
+    @ManyToMany
+    private List<User> friends = new ArrayList<>();
+
+    
     // Getters y Setters
 
     public Long getId() {
         return id;
+    }
+    public List<User> getFriendRequests() {
+        return friendRequests;
+    }
+    public void setFriendRequests(List<User> friendRequests) {
+        this.friendRequests = friendRequests;
+    }
+    public List<User> getFriends() {
+        return friends;
+    }
+    public void setFriends(List<User> friends) {
+        this.friends = friends;
     }
     public void setId(Long id) {
         this.id = id;

@@ -17,20 +17,19 @@ public class ProfileController {
         this.userService = userService;
     }
 
-    // GET: retorna el perfil del usuario logueado
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile(Authentication auth) {
         if (auth == null || !auth.isAuthenticated()) {
-            return ResponseEntity.status(401).body("No estás autenticado.");
+            return ResponseEntity.status(401).body("{\"error\":\"No estás autenticado.\"}");
         }
         String email = auth.getName();
         User user = userService.findUserByEmail(email);
         if (user == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body("{\"error\":\"Usuario no encontrado\"}");
         }
         return ResponseEntity.ok(user);
     }
-
+    
     // PUT: actualiza campos del usuario logueado
     @PutMapping("/profile")
     public ResponseEntity<?> updateProfile(
