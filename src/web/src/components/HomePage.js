@@ -70,6 +70,16 @@ function HomePage({ onLogout }) {
                     >
                         Ver Calendario 
                     </button>
+                    <button 
+                        style={buttonStyle}
+                        onMouseEnter={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}
+                        onMouseLeave={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
+                        onClick={() => navigate('/friends')} 
+                    >
+                        Gestionar Amigos
+                    </button>
+
+
                     <button
                         style={buttonStyle}
                         onMouseEnter={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}

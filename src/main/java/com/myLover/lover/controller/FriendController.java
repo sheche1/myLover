@@ -4,9 +4,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,32 +65,32 @@ public class FriendController {
         }
     }
     
-@PostMapping("/accept")
-public ResponseEntity<String> acceptFriendRequest(@RequestParam String receiverEmail, @RequestParam String senderEmail, Principal principal) {
-    if (!principal.getName().equals(receiverEmail)) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso no autorizado");
+    @PostMapping("/accept")
+    public ResponseEntity<?> acceptFriendRequest(@RequestParam String receiverEmail, @RequestParam String senderEmail, Principal principal) {
+        if (!principal.getName().equals(receiverEmail)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso no autorizado");
+        }
+    
+        Optional<User> receiverOpt = userRepository.findUserByEmail(receiverEmail);
+        Optional<User> senderOpt = userRepository.findUserByEmail(senderEmail);
+    
+        if (receiverOpt.isEmpty() || senderOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+        }
+    
+        User receiver = receiverOpt.get();
+        User sender = senderOpt.get();
+    
+        receiver.getFriendRequests().remove(sender);
+        receiver.getFriends().add(sender);
+        sender.getFriends().add(receiver);
+    
+        userRepository.save(receiver);
+        userRepository.save(sender);
+    
+        return ResponseEntity.ok(Map.of("message", "Solicitud de amistad aceptada", "friends", receiver.getFriends()));
     }
-
-    Optional<User> receiverOpt = userRepository.findUserByEmail(receiverEmail);
-    Optional<User> senderOpt = userRepository.findUserByEmail(senderEmail);
-
-    if (receiverOpt.isEmpty() || senderOpt.isEmpty()) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
-    }
-
-    User receiver = receiverOpt.get();
-    User sender = senderOpt.get();
-
-    receiver.getFriendRequests().remove(sender);
-    receiver.getFriends().add(sender);
-    sender.getFriends().add(receiver);
-
-    userRepository.save(receiver);
-    userRepository.save(sender);
-
-    return ResponseEntity.ok("Solicitud de amistad aceptada");
-}
-
+    
 @PostMapping("/reject")
 public ResponseEntity<String> rejectFriendRequest(@RequestParam String receiverEmail, @RequestParam String senderEmail, Principal principal) {
     if (!principal.getName().equals(receiverEmail)) {
@@ -113,12 +116,16 @@ public ResponseEntity<String> rejectFriendRequest(@RequestParam String receiverE
 
 
 
-/*    @GetMapping("/profile")
-    public ResponseEntity<User> getUserProfile(@RequestParam String email) {
-    User user = userRepository.findUserByEmail(email)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-    return ResponseEntity.ok(user);
+@GetMapping("/list")
+public ResponseEntity<?> getFriends(@RequestParam String email) {
+    Optional<User> userOpt = userRepository.findUserByEmail(email);
+    if (userOpt.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+    }
+
+    User user = userOpt.get();
+    List<User> friends = user.getFriends();
+    return ResponseEntity.ok(friends);
 }
-*/
-    
+ 
 }

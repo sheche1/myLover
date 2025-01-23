@@ -5,6 +5,7 @@ import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import CalendarPage from './components/CalendarPage';
 import ProfilePage from './components/ProfilePage';
+import FriendsPage from './components/FriendsPage';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -45,12 +46,14 @@ function App() {
                     path="/calendar" 
                     element={isAuthenticated ? <CalendarPage /> : <Navigate to="/login" />} 
                 />
-                {/* Nueva ruta para el perfil */}
                 <Route
                     path="/profile"
                     element={isAuthenticated ? <ProfilePage /> : <Navigate to="/login" />}
                 />
-                {/* Ruta por defecto 404 */}
+                <Route
+                    path="/friends"
+                    element={isAuthenticated ? <FriendsPage /> : <Navigate to="/login" />}
+                />
                 <Route 
                     path="*" 
                     element={<h1 style={{ textAlign: 'center' }}>404 - Página no encontrada</h1>} 

@@ -48,8 +48,9 @@ public class User {
     @ManyToMany
     private List<User> friendRequests = new ArrayList<>();
 
-    @ManyToMany
-    private List<User> friends = new ArrayList<>();
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<User> friends;
+
 
     
     // Getters y Setters

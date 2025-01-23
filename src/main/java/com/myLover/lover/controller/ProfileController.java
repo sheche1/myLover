@@ -1,34 +1,41 @@
 package com.myLover.lover.controller;
 
+import java.util.Optional;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 
+import com.google.gson.Gson;
 import com.myLover.lover.model.User;
 import com.myLover.lover.service.UserService;
+import com.myLover.lover.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api")
 public class ProfileController {
-
     private final UserService userService;
-
-    public ProfileController(UserService userService) {
+    private final UserRepository userRepository;
+    public ProfileController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile(Authentication auth) {
         if (auth == null || !auth.isAuthenticated()) {
-            return ResponseEntity.status(401).body("{\"error\":\"No estás autenticado.\"}");
+            return ResponseEntity.status(401).body("No estás autenticado.");
         }
         String email = auth.getName();
         User user = userService.findUserByEmail(email);
         if (user == null) {
-            return ResponseEntity.status(404).body("{\"error\":\"Usuario no encontrado\"}");
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(user);
     }
+    
+
     
     // PUT: actualiza campos del usuario logueado
     @PutMapping("/profile")
