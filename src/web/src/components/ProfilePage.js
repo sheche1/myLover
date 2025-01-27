@@ -5,6 +5,7 @@ function ProfilePage() {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const [newStatus, setNewStatus] = useState('');
 
   const [editForm, setEditForm] = useState({
     nombre: '',
@@ -16,42 +17,37 @@ function ProfilePage() {
     fechaPrimerEncuentro: '',
   });
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const email = localStorage.getItem('email');
-        const password = localStorage.getItem('password');
-    
-        const response = await fetch(`http://localhost:8080/api/profile`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Basic ' + btoa(`${email}:${password}`)
-          }
-        });
-    
-        if (!response.ok) {
-          throw new Error(`Error al obtener perfil: ${response.status}`);
+  const fetchProfile = async () => {
+    try {
+      const email = localStorage.getItem('email');
+      const password = localStorage.getItem('password');
+
+      const response = await fetch(`http://localhost:8080/api/profile?t=${new Date().getTime()}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic ' + btoa(`${email}:${password}`)
         }
-    
-        const data = await response.json();
-        console.log("Datos recibidos:", data);
-    
-        if (data && typeof data === 'object') {
-          setUserData(data);
-        } else {
-          console.error("Estructura de datos incorrecta:", data);
-          setError("Estructura de datos incorrecta");
-        }
-      } catch (err) {
-        console.error('Error al cargar los datos:', err);
-        setError('Error al cargar el perfil.');
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al obtener el perfil');
       }
-    };
-    
+
+      const data = await response.json();
+      setUserData(data);
+      setNewStatus(data.status || 'No establecido');
+      console.log("Datos recibidos del perfil:", data);
+    } catch (err) {
+      console.error('Error al cargar los datos:', err);
+      setError('Error al cargar el perfil.');
+    }
+  };
+
+  useEffect(() => {
     fetchProfile();
   }, []);
-  
+
   const handleEditClick = () => {
     if (!userData) return;
     setEditForm({
@@ -75,8 +71,6 @@ function ProfilePage() {
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
-    setError('');
-
     try {
       const email = localStorage.getItem('email');
       const password = localStorage.getItem('password');
@@ -91,16 +85,41 @@ function ProfilePage() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al actualizar perfil');
+        throw new Error('Error al actualizar el perfil');
       }
 
-      const updatedUser = await response.json();
-      setUserData(updatedUser);
+      alert('Perfil actualizado con éxito');
       setIsEditing(false);
+      fetchProfile();
     } catch (err) {
-      console.error(err);
-      setError('Error al actualizar perfil: ' + err.message);
+      console.error('Error al actualizar perfil:', err);
+      alert('Error al actualizar el perfil');
+    }
+  };
+
+  const handleStatusUpdate = async () => {
+    try {
+      const email = localStorage.getItem('email')?.trim();
+      const password = localStorage.getItem('password')?.trim();
+  
+      const response = await fetch(`http://localhost:8080/api/profile/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic ' + btoa(`${email}:${password}`),
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+  
+      if (!response.ok) throw new Error("Error del servidor");
+      setNewStatus(newStatus); 
+      alert('Estado actualizado correctamente');
+      
+      await fetchProfile();
+  
+    } catch (error) { 
+      console.error('Error:', error);
+      alert('Error al actualizar el estado: ' + error.message);
     }
   };
 
@@ -127,97 +146,57 @@ function ProfilePage() {
           <p><strong>Fecha de nacimiento de tu pareja:</strong> {userData.fechaNacimientoPareja}</p>
           <p><strong>Primer día que se conocieron:</strong> {userData.fechaPrimerEncuentro}</p>
           <p><strong>Email:</strong> {userData.email}</p>
-
-          <button className="profile-edit-btn" onClick={handleEditClick}>
-            Editar Perfil
-          </button>
         </div>
+      )}
+
+      {!isEditing && (
+        <button className="profile-edit-btn" onClick={handleEditClick}>
+          Editar Perfil
+        </button>
       )}
 
       {isEditing && (
         <form onSubmit={handleUpdateProfile} className="profile-form">
-          <div className="form-group">
-            <label>Tu nombre</label>
-            <input 
-              type="text" 
-              name="nombre" 
-              value={editForm.nombre} 
-              onChange={handleInputChange} 
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Tu apellido</label>
-            <input 
-              type="text" 
-              name="apellido" 
-              value={editForm.apellido} 
-              onChange={handleInputChange} 
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Nombre de tu pareja</label>
-            <input 
-              type="text" 
-              name="nombrePareja" 
-              value={editForm.nombrePareja} 
-              onChange={handleInputChange} 
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Apellido de tu pareja</label>
-            <input 
-              type="text" 
-              name="apellidoPareja" 
-              value={editForm.apellidoPareja} 
-              onChange={handleInputChange} 
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Tu fecha de nacimiento</label>
-            <input 
-              type="date" 
-              name="fechaNacimiento" 
-              value={editForm.fechaNacimiento} 
-              onChange={handleInputChange} 
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Fecha de nacimiento de tu pareja</label>
-            <input 
-              type="date" 
-              name="fechaNacimientoPareja" 
-              value={editForm.fechaNacimientoPareja} 
-              onChange={handleInputChange} 
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Primer día que se conocieron</label>
-            <input 
-              type="date" 
-              name="fechaPrimerEncuentro" 
-              value={editForm.fechaPrimerEncuentro} 
-              onChange={handleInputChange} 
-            />
-          </div>
-
+          <input 
+            type="text" 
+            name="nombre" 
+            value={editForm.nombre} 
+            onChange={handleInputChange} 
+            required 
+          />
+          <input 
+            type="text" 
+            name="apellido" 
+            value={editForm.apellido} 
+            onChange={handleInputChange} 
+            required 
+          />
           <button type="submit" className="profile-save-btn">Guardar</button>
-          <button 
-            type="button" 
-            className="profile-cancel-btn" 
-            onClick={() => setIsEditing(false)}
-          >
+          <button type="button" className="profile-cancel-btn" onClick={() => setIsEditing(false)}>
             Cancelar
           </button>
         </form>
       )}
+
+      <div className="profile-status-container">
+        <h3>Estado</h3>
+        <p className="current-status">
+          {userData.status  ? userData.status  : 'No establecido'}
+        </p>
+        <select
+          value={newStatus}
+          onChange={(e) => setNewStatus(e.target.value)}
+          className="status-select"
+        >
+          <option value="">Selecciona tu estado</option>
+          <option value="Bien">Bien</option>
+          <option value="Regular">Regular</option>
+          <option value="Mal">Mal</option>
+        </select>
+        <button className="status-update-btn" onClick={handleStatusUpdate}>
+          Actualizar Estado
+        </button>
+      </div>
     </div>
   );
 }

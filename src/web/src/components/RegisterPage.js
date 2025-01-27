@@ -35,12 +35,8 @@ function RegisterPage() {
             });
 
             if (response.ok) {
-                // Registro exitoso
                 setMessage('¡Registro exitoso! Ahora puedes iniciar sesión.');
-            } else {
-                // Cuando el servidor responde con 400
-                const errorData = await response.json();
-                // 'errorData' será un objeto JSON con { "message": "..." }
+            } else {                const errorData = await response.json();
                 setMessage(`Error: ${errorData.message || 'Algo salió mal'}`);
             }
         } catch (error) {

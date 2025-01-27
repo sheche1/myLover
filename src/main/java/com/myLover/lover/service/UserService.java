@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.myLover.lover.model.User;
 import com.myLover.lover.repository.UserRepository;
 
@@ -63,5 +65,18 @@ public class UserService {
         User sender = repository.findUserByEmail(senderEmail).orElseThrow(() -> new RuntimeException("Sender not found"));
         receiver.getFriendRequests().remove(sender);
         return repository.save(receiver);
+    }
+    @Transactional
+    public void updateUserStatus(String email, String estado) {
+        User user = repository.findUserByEmail(email)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        user.setStatus(estado);
+        repository.save(user); 
+    }
+    
+
+    public String getUserStatus(String email) {
+        User user = repository.findByEmail(email);
+        return user != null ? user.getStatus() : null;
     }
 }

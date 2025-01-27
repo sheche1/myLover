@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 public class User {
 
@@ -46,12 +48,16 @@ public class User {
     private LocalDate fechaPrimerEncuentro;
 
     @ManyToMany
+    @JsonIgnoreProperties({"friends", "friendRequests"}) 
     private List<User> friendRequests = new ArrayList<>();
 
+
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"friends", "friendRequests"}) 
     private List<User> friends;
+    
 
-
+    private String status = "No establecido"; 
     
     // Getters y Setters
 
@@ -136,4 +142,11 @@ public class User {
     public void setFechaPrimerEncuentro(LocalDate fechaPrimerEncuentro) {
         this.fechaPrimerEncuentro = fechaPrimerEncuentro;
     }
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 }

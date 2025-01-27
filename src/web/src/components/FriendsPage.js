@@ -7,18 +7,31 @@ function FriendsPage() {
   const [emailToSearch, setEmailToSearch] = useState('');
   const [error, setError] = useState('');
 
+  const getStatusEmoji = (status) => {
+    switch (status) {
+      case 'Bien':
+        return '😊';   
+      case 'Regular':
+        return '😐';  
+      case 'Mal':
+        return '😢';  
+      default:
+        return '❓';   
+    }
+  };
+
   useEffect(() => {
     const fetchFriendsData = async () => {
       try {
         const email = localStorage.getItem('email');
         const password = localStorage.getItem('password');
 
-        const response = await fetch(`http://localhost:8080/api/profile`, {
+        const response = await fetch('http://localhost:8080/api/profile', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Basic ' + btoa(`${email}:${password}`)
-          }
+            Authorization: 'Basic ' + btoa(`${email}:${password}`),
+          },
         });
 
         if (!response.ok) {
@@ -26,8 +39,23 @@ function FriendsPage() {
         }
 
         const data = await response.json();
-        setFriendRequests(data.friendRequests || []);
-        setFriends(data.friends || []);
+
+        const uniqueRequests = (data.friendRequests || []).reduce((acc, req) => {
+          if (!acc.find((item) => item.email === req.email)) {
+            acc.push(req);
+          }
+          return acc;
+        }, []);
+
+        const uniqueFriends = (data.friends || []).reduce((acc, fr) => {
+          if (!acc.find((item) => item.email === fr.email)) {
+            acc.push(fr);
+          }
+          return acc;
+        }, []);
+
+        setFriendRequests(uniqueRequests);
+        setFriends(uniqueFriends);
       } catch (err) {
         console.error('Error al cargar datos:', err);
         setError('Error al cargar los datos de amigos.');
@@ -37,9 +65,11 @@ function FriendsPage() {
     fetchFriendsData();
   }, []);
 
+
   const handleFriendRequest = async () => {
     try {
       const email = localStorage.getItem('email');
+      const password = localStorage.getItem('password');
       const cleanEmailToSearch = emailToSearch.trim();
 
       const response = await fetch(
@@ -48,8 +78,8 @@ function FriendsPage() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Basic ' + btoa(`${email}:${localStorage.getItem('password')}`)
-          }
+            Authorization: 'Basic ' + btoa(`${email}:${password}`),
+          },
         }
       );
 
@@ -58,11 +88,13 @@ function FriendsPage() {
       }
 
       alert('Solicitud enviada correctamente');
+      setEmailToSearch('');
     } catch (error) {
       console.error('Error al enviar solicitud:', error);
       alert('Error al enviar solicitud: ' + error.message);
     }
   };
+
 
   const handleAcceptRequest = async (senderEmail) => {
     try {
@@ -75,8 +107,8 @@ function FriendsPage() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Basic ' + btoa(`${email}:${password}`)
-          }
+            Authorization: 'Basic ' + btoa(`${email}:${password}`),
+          },
         }
       );
 
@@ -84,29 +116,45 @@ function FriendsPage() {
         throw new Error(`Error: ${response.status}`);
       }
 
-      setFriendRequests(friendRequests.filter(request => request.email !== senderEmail));
+      setFriendRequests((prev) =>
+        prev.filter((request) => request.email !== senderEmail)
+      );
+
       alert('Solicitud aceptada');
-      setFriends([...friends, { email: senderEmail }]);
+
+      setFriends((prevFriends) => {
+        if (!prevFriends.find((f) => f.email === senderEmail)) {
+          return [...prevFriends, { email: senderEmail, status: 'Desconocido' }];
+        }
+        return prevFriends;
+      });
     } catch (error) {
       console.error('Error al aceptar solicitud:', error);
       alert('Error al aceptar solicitud: ' + error.message);
     }
   };
 
+
   const handleRejectRequest = async (senderEmail) => {
     try {
       const email = localStorage.getItem('email');
       const password = localStorage.getItem('password');
 
-      await fetch(`http://localhost:8080/api/friends/reject?receiverEmail=${email}&senderEmail=${senderEmail}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Basic ' + btoa(`${email}:${password}`)
+      await fetch(
+        `http://localhost:8080/api/friends/reject?receiverEmail=${email}&senderEmail=${senderEmail}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Basic ' + btoa(`${email}:${password}`),
+          },
         }
-      });
+      );
 
-      setFriendRequests(friendRequests.filter(request => request.email !== senderEmail));
+      setFriendRequests((prev) =>
+        prev.filter((request) => request.email !== senderEmail)
+      );
+
       alert('Solicitud rechazada');
     } catch (error) {
       console.error(error);
@@ -122,36 +170,62 @@ function FriendsPage() {
     <div className="friends-container">
       <h1 className="friends-title">Gestionar Amigos</h1>
 
-      <h2>Buscar amigos</h2>
-      <input
-        type="Friendemail"
-        placeholder="Introduce el correo del usuario"
-        value={emailToSearch}
-        onChange={(e) => setEmailToSearch(e.target.value)}
-      />
-      <button onClick={handleFriendRequest}>Enviar solicitud</button>
+      <div className="friends-search">
+        <input
+          type="email"
+          placeholder="Introduce el correo del usuario"
+          value={emailToSearch}
+          onChange={(e) => setEmailToSearch(e.target.value)}
+        />
+        <button onClick={handleFriendRequest}>Enviar solicitud</button>
+      </div>
 
-      <h2>Solicitudes de amistad</h2>
-      {friendRequests.length > 0 ? (
-        friendRequests.map((request, index) => (
-          <div key={index}>
-            <span>{request.email}</span>
-            <button onClick={() => handleAcceptRequest(request.email)}>Aceptar</button>
-            <button onClick={() => handleRejectRequest(request.email)}>Rechazar</button>
+      <div className="friends-section">
+        <h2>Solicitudes de amistad</h2>
+        {friendRequests.length > 0 ? (
+          <div className="friend-requests">
+            {friendRequests.map((request, index) => (
+              <div key={index} className="request-card">
+                <span>
+                  {request.nombre || 'Usuario'} ({request.email})
+                </span>
+                <div className="request-actions">
+                  <button onClick={() => handleAcceptRequest(request.email)}>
+                    Aceptar
+                  </button>
+                  <button onClick={() => handleRejectRequest(request.email)}>
+                    Rechazar
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))
-      ) : (
-        <p>No tienes solicitudes pendientes</p>
-      )}
+        ) : (
+          <p>No tienes solicitudes pendientes</p>
+        )}
+      </div>
 
-      <h2>Lista de amigos</h2>
-      {friends.length > 0 ? (
-        friends.map((friend, index) => (
-          <p key={index}>{friend.nombre} ({friend.email})</p>
-        ))
-      ) : (
-        <p>No tienes amigos agregados</p>
-      )}
+
+      <div className="friends-section">
+        <h2>Lista de amigos</h2>
+        {friends.length > 0 ? (
+          friends.map((friend, index) => (
+            <div key={index} className="friend-item">
+              <div className="friend-emoji">{getStatusEmoji(friend.status)}</div>
+              <div className="friend-info">
+                <p className="friend-name">
+                  {friend.nombre || 'Amigo'} ({friend.email})
+                </p>
+                <p className="friend-status">
+                  <strong>Estado:</strong> {friend.status || 'Desconocido'}
+                </p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>No tienes amigos agregados</p>
+        )}
+      </div>
     </div>
   );
 }

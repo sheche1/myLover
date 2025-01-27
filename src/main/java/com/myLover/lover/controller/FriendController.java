@@ -114,8 +114,6 @@ public ResponseEntity<String> rejectFriendRequest(@RequestParam String receiverE
 }
 
 
-
-
 @GetMapping("/list")
 public ResponseEntity<?> getFriends(@RequestParam String email) {
     Optional<User> userOpt = userRepository.findUserByEmail(email);
