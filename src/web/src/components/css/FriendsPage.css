@@ -1,154 +1,184 @@
-/* 
-   Fondo principal con gradiente suave. 
-   Puedes ajustar colores según tu estilo.
-*/
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', 'Arial', sans-serif;
-    background: linear-gradient(to bottom right, #ffecef, #ffffff);
-  }
-  
-  /* Contenedor principal de la página */
-  .friends-container {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 2rem;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-  }
-  
-  /* Título */
-  .friends-title {
-    color: #ff6b6b;
-    font-size: 2.2rem;
-    text-align: center;
-    margin-bottom: 1.5rem;
-  }
-  
-  /* Bloque de error, si ocurre */
-  .friends-error {
-    color: red;
-    text-align: center;
-    margin-top: 20px;
-    font-weight: bold;
-  }
-  
-  /* Sección donde está el input y botón de buscar */
-  .friends-search {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-  }
-  
-  .friends-search input {
-    flex: 1;
-    max-width: 300px;
-    padding: 0.8rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-  
-  .friends-search button {
-    padding: 0.8rem 1.2rem;
-    font-size: 1rem;
-    background-color: #ff6b6b;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .friends-search button:hover {
-    background-color: #ff8787;
-  }
-  
-  /* Contenedor general de cada sección */
-  .friends-section {
-    margin-bottom: 2rem;
-  }
-  
-  .friends-section h2 {
-    color: #333;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  /* Cartas para las solicitudes */
-  .friend-requests .request-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #fff9f9;
-    padding: 0.8rem 1rem;
-    margin-bottom: 0.6rem;
-    border-radius: 8px;
-    border: 1px solid #ffe0e1;
-    transition: background 0.2s;
-  }
-  
-  .request-card span {
-    font-weight: 500;
-    color: #555;
-  }
-  
-  .request-actions button {
-    margin: 0 0.25rem;
-    padding: 0.4rem 0.8rem;
-    border: none;
-    color: #fff;
-    background: #ff6b6b;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-  }
-  
-  .request-actions button:hover {
-    background-color: #ff8787;
-  }
-  
-  /* Lista de amigos */
-  .friend-item {
-    display: flex;
-    align-items: center;
-    background-color: #fff9f9;
-    margin-bottom: 0.8rem;
-    padding: 0.8rem 1rem;
-    border-radius: 8px;
-    border: 1px solid #ffe0e1;
-    transition: background 0.2s;
-  }
-  
-  .friend-item:hover {
-    background-color: #fff0f0;
-  }
-  
-  /* Emoji a la izquierda */
-  .friend-emoji {
-    font-size: 2rem;
-    margin-right: 1rem;
-  }
-  
-  /* Información de cada amigo */
-  .friend-info {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .friend-name {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: #444;
-  }
-  
-  .friend-status {
-    margin: 0.2rem 0 0;
-    font-size: 1rem;
-    color: #666;
-  }
-  
+/* CONTENEDOR GENERAL */
+.friends-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  font-family: 'Arial', sans-serif;
+}
+
+/* TÍTULOS, ERRORES, ETC. */
+.friends-title {
+  color: #ff6b6b;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.friends-error {
+  color: red;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+/* BÚSQUEDA DE AMIGOS */
+.friends-search {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+.friends-search input {
+  flex: 1;
+  max-width: 300px;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+.friends-search button {
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  background-color: #ff6b6b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.friends-search button:hover {
+  background-color: #ff8787;
+}
+
+/* SECCIONES (SOLICITUDES, LISTA DE AMIGOS) */
+.friends-section {
+  margin-bottom: 2rem;
+}
+.friends-section h2 {
+  color: #333;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* SOLICITUDES */
+.friend-requests .request-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff9f9;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ffe0e1;
+  transition: background 0.2s;
+}
+.request-actions button {
+  margin: 0 0.25rem;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  color: #fff;
+  background: #ff6b6b;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+.request-actions button:hover {
+  background-color: #ff8787;
+}
+
+/* LISTA DE AMIGOS */
+.friend-item {
+  display: flex;
+  align-items: center;
+  background-color: #fff9f9;
+  margin-bottom: 0.8rem;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ffe0e1;
+  transition: background 0.2s;
+  cursor: pointer; /* Para indicar que se puede clicar */
+}
+.friend-item:hover {
+  background-color: #fff0f0;
+}
+.friend-emoji {
+  font-size: 2rem;
+  margin-right: 1rem;
+}
+.friend-info {
+  display: flex;
+  flex-direction: column;
+}
+.friend-name {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #444;
+}
+.friend-status {
+  margin: 0.2rem 0 0;
+  font-size: 1rem;
+  color: #666;
+}
+
+/* CHAT CON EL AMIGO SELECCIONADO */
+.chat-container {
+  background-color: #fff9f9;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid #ffe0e1;
+  margin-top: 2rem;
+}
+.chat-container h2 {
+  margin-top: 0;
+  color: #333;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+.chat-messages {
+  height: 200px;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #ffe0e1;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.chat-message {
+  margin-bottom: 0.8rem;
+}
+.chat-message-own {
+  text-align: right; /* Mensajes propios a la derecha */
+}
+.chat-sender {
+  font-weight: bold;
+  color: #333;
+}
+.chat-content {
+  margin-left: 4px;
+}
+.chat-input {
+  display: flex;
+  gap: 0.5rem;
+}
+.chat-input input {
+  flex: 1;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.chat-input button {
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  background-color: #ff6b6b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.chat-input button:hover {
+  background-color: #ff8787;
+}
