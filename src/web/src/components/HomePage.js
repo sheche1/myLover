@@ -78,7 +78,24 @@ function HomePage({ onLogout }) {
                     >
                         Gestionar Amigos
                     </button>
+                    <button
+                        style={buttonStyle}
+                        onMouseEnter={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}
+                        onMouseLeave={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
+                        onClick={() => navigate('/send-letter')}
+                        >
+                        Enviar Carta
+                    </button>
 
+                    <button
+                        style={buttonStyle}
+                        onMouseEnter={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}
+                        onMouseLeave={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
+                        onClick={() => navigate('/received-letters')}
+                        >
+                        Cartas Recibidas
+                    </button>
+                    
 
                     <button
                         style={buttonStyle}

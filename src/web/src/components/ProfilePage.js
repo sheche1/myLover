@@ -157,26 +157,75 @@ function ProfilePage() {
 
       {isEditing && (
         <form onSubmit={handleUpdateProfile} className="profile-form">
-          <input 
-            type="text" 
-            name="nombre" 
-            value={editForm.nombre} 
-            onChange={handleInputChange} 
-            required 
+          <label>Nombre</label>
+          <input
+            type="text"
+            name="nombre"
+            value={editForm.nombre}
+            onChange={handleInputChange}
+            required
           />
-          <input 
-            type="text" 
-            name="apellido" 
-            value={editForm.apellido} 
-            onChange={handleInputChange} 
-            required 
+
+          <label>Apellido</label>
+          <input
+            type="text"
+            name="apellido"
+            value={editForm.apellido}
+            onChange={handleInputChange}
+            required
           />
+
+          <label>Nombre de tu pareja</label>
+          <input
+            type="text"
+            name="nombrePareja"
+            value={editForm.nombrePareja}
+            onChange={handleInputChange}
+          />
+
+          <label>Apellido de tu pareja</label>
+          <input
+            type="text"
+            name="apellidoPareja"
+            value={editForm.apellidoPareja}
+            onChange={handleInputChange}
+          />
+
+          <label>Tu fecha de nacimiento</label>
+          <input
+            type="date"
+            name="fechaNacimiento"
+            value={editForm.fechaNacimiento}
+            onChange={handleInputChange}
+          />
+
+          <label>Fecha de nacimiento de tu pareja</label>
+          <input
+            type="date"
+            name="fechaNacimientoPareja"
+            value={editForm.fechaNacimientoPareja}
+            onChange={handleInputChange}
+          />
+
+          <label>Primer día que se conocieron</label>
+          <input
+            type="date"
+            name="fechaPrimerEncuentro"
+            value={editForm.fechaPrimerEncuentro}
+            onChange={handleInputChange}
+          />
+
           <button type="submit" className="profile-save-btn">Guardar</button>
-          <button type="button" className="profile-cancel-btn" onClick={() => setIsEditing(false)}>
+          <button
+            type="button"
+            className="profile-cancel-btn"
+            onClick={() => setIsEditing(false)}
+          >
             Cancelar
           </button>
         </form>
       )}
+
 
       <div className="profile-status-container">
         <h3>Estado</h3>
