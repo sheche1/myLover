@@ -5,8 +5,11 @@ function SendLetterPage() {
   const [toEmail, setToEmail] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [unlockDate, setUnlockDate] = useState(''); 
+  const [secretPassword, setSecretPassword] = useState('');
 
   const navigate = useNavigate();
+
   const myEmail = localStorage.getItem('email') || '';
   const myPassword = localStorage.getItem('password') || '';
 
@@ -19,7 +22,9 @@ function SendLetterPage() {
       senderEmail: myEmail,
       receiverEmail: toEmail.trim(),
       title: title.trim(),
-      content: content.trim()
+      content: content.trim(),
+      unlockDate,
+      secretPassword
     };
 
     try {
@@ -35,16 +40,21 @@ function SendLetterPage() {
         throw new Error('Error al enviar la carta');
       }
       alert('Carta enviada con éxito');
+      // Limpiar el formulario
       setToEmail('');
       setTitle('');
       setContent('');
+      setUnlockDate('');
+      setSecretPassword('');
     } catch (error) {
       console.error(error);
       alert('No se pudo enviar la carta');
     }
   };
 
-  // Estilos para un fondo pastel
+  // ---------- Estilos en línea ----------
+
+  // Fondo en gradiente
   const pageStyle = {
     minHeight: '100vh',
     background: 'linear-gradient(to right, #ffecef, #fff)',
@@ -54,54 +64,72 @@ function SendLetterPage() {
     fontFamily: "'Open Sans', sans-serif"
   };
 
-  // Contenedor principal
+  // Tarjeta central
   const containerStyle = {
+    backgroundColor: '#fff',
+    borderRadius: '10px',
     width: '90%',
     maxWidth: '600px',
-    backgroundColor: 'white',
-    borderRadius: '10px',
     padding: '2rem',
-    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+    margin: '2rem'
   };
 
-  // Título
   const titleStyle = {
+    textAlign: 'center',
     color: '#ff6b6b',
     fontWeight: 'bold',
     marginBottom: '1.5rem',
-    textAlign: 'center',
     fontSize: '1.8rem'
   };
 
-  // Etiquetas de texto
+  // Label y input
   const labelStyle = {
     display: 'block',
     margin: '0.5rem 0 0.3rem',
-    fontWeight: '600',
+    fontWeight: 600,
     color: '#444'
   };
 
-  // Inputs
   const inputStyle = {
     width: '100%',
     marginBottom: '1rem',
     padding: '0.6rem',
     borderRadius: '5px',
     border: '1px solid #ccc',
-    fontFamily: "'Open Sans', sans-serif",
     fontSize: '1rem'
   };
 
-  // Textarea
   const textareaStyle = {
     ...inputStyle,
     height: '120px',
-    resize: 'vertical',
-    lineHeight: '1.5'
+    resize: 'vertical'
+  };
+
+  // Para agrupar la fecha y la contraseña en la misma línea
+  const rowStyle = {
+    display: 'flex',
+    gap: '1rem',
+    alignItems: 'center',
+    flexWrap: 'wrap' // Para que no se desborde en pantallas pequeñas
+  };
+
+  const miniLabelStyle = {
+    fontWeight: 600,
+    color: '#444',
+    margin: '0.5rem 0 0.3rem'
+  };
+
+  const smallInputStyle = {
+    flex: '1',
+    padding: '0.5rem',
+    borderRadius: '5px',
+    border: '1px solid #ccc',
+    fontSize: '0.95rem'
   };
 
   // Botones
-  const buttonContainer = {
+  const buttonRowStyle = {
     display: 'flex',
     justifyContent: 'center',
     gap: '1rem',
@@ -115,14 +143,13 @@ function SendLetterPage() {
     borderRadius: '5px',
     padding: '0.6rem 1.2rem',
     cursor: 'pointer',
-    transition: 'background-color 0.3s ease',
-    fontSize: '1rem'
+    fontSize: '1rem',
+    transition: 'background-color 0.3s ease'
   };
 
   const handleMouseEnter = (e) => {
     e.target.style.backgroundColor = '#ff8787';
   };
-
   const handleMouseLeave = (e) => {
     e.target.style.backgroundColor = '#ff6b6b';
   };
@@ -158,7 +185,33 @@ function SendLetterPage() {
           placeholder="Escribe aquí el contenido de la carta"
         />
 
-        <div style={buttonContainer}>
+        <div style={rowStyle}>
+          <div style={{ flex: '1 1 auto' }}>
+            <label style={miniLabelStyle}>
+              Fecha de desbloqueo (opcional)
+            </label>
+            <input
+              type="date"
+              value={unlockDate}
+              onChange={(e) => setUnlockDate(e.target.value)}
+              style={smallInputStyle}
+            />
+          </div>
+
+          <div style={{ flex: '1 1 auto' }}>
+            <label style={miniLabelStyle}>
+              Contraseña (para abrir antes de la fecha)
+            </label>
+            <input
+              type="password"
+              value={secretPassword}
+              onChange={(e) => setSecretPassword(e.target.value)}
+              style={smallInputStyle}
+            />
+          </div>
+        </div>
+
+        <div style={buttonRowStyle}>
           <button
             style={buttonStyle}
             onClick={handleSend}
@@ -167,7 +220,6 @@ function SendLetterPage() {
           >
             Enviar
           </button>
-
           <button
             style={buttonStyle}
             onClick={() => navigate('/')}

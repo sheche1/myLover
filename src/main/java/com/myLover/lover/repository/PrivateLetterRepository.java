@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface PrivateLetterRepository extends JpaRepository<PrivateLetter, Long> {
 
-    // Cartas recibidas por un usuario, ordenadas
-    List<PrivateLetter> findByReceiverEmailOrderByCreatedAtDesc(String receiverEmail);
+ // Para listar las cartas que un usuario recibió
+ List<PrivateLetter> findByReceiverEmailOrderByCreatedAtDesc(String receiverEmail);
 
-    // Cartas enviadas por un usuario, ordenadas
-    List<PrivateLetter> findBySenderEmailOrderByCreatedAtDesc(String senderEmail);
+ // (Opcional) para ver las cartas que un usuario envió
+ List<PrivateLetter> findBySenderEmailOrderByCreatedAtDesc(String senderEmail);
 }

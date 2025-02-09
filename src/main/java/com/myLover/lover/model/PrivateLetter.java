@@ -1,6 +1,8 @@
 package com.myLover.lover.model;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -10,18 +12,27 @@ public class PrivateLetter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String senderEmail;    // quien la envía
-    private String receiverEmail;  // quien la recibe
-    private String title;          // título/asunto
-    private String content;        // cuerpo de la carta
-    private LocalDateTime createdAt; // fecha/hora
+    private String senderEmail;
+    private String receiverEmail;
+    private String title;
 
-    public PrivateLetter() {}
+    @Column(length = 10000)
+    private String content;
 
+    private LocalDateTime createdAt;
+
+    private LocalDate  unlockDate;
+
+
+    private String secretPassword;
+
+    // ----- getters y setters -----
     public Long getId() {
         return id;
     }
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getSenderEmail() {
         return senderEmail;
@@ -56,5 +67,19 @@ public class PrivateLetter {
     }
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDate  getUnlockDate() {
+        return unlockDate;
+    }
+    public void setUnlockDate(LocalDate  unlockDate) {
+        this.unlockDate = unlockDate;
+    }
+
+    public String getSecretPassword() {
+        return secretPassword;
+    }
+    public void setSecretPassword(String secretPassword) {
+        this.secretPassword = secretPassword;
     }
 }

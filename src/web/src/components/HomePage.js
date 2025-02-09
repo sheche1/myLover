@@ -1,122 +1,179 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate para la navegación
+import { useNavigate } from 'react-router-dom';
 
 function HomePage({ onLogout }) {
-    const navigate = useNavigate(); // Hook para navegar entre rutas
+  const navigate = useNavigate();
 
-    // Estilos en línea para el fondo
-    const backgroundStyle = {
-        backgroundImage: 'url(/imagenes/background.jpg)', // Ruta absoluta desde public
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        textAlign: 'center',
-    };
+  // Fondo con imagen
+  const backgroundStyle = {
+    position: 'relative',
+    minHeight: '100vh',
+    background: 'url(/imagenes/background.jpg) no-repeat center center/cover',
+    fontFamily: "'Open Sans', sans-serif"
+  };
 
-    // Estilos en línea para la caja de contenido
-    const contentBoxStyle = {
-        background: 'rgba(255, 255, 255, 0.8)', // Fondo semitransparente
-        padding: '20px 40px',
-        borderRadius: '10px',
-        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
-        maxWidth: '600px',
-        width: '90%',
-    };
+  // Overlay con un gradiente rosado y una leve animación “sparkling”
+  const overlayStyle = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background:
+      'linear-gradient(160deg, rgba(255, 200, 220, 0.3), rgba(255, 180, 210, 0.4))',
+    animation: 'pulseOverlay 6s ease-in-out infinite alternate',
+    pointerEvents: 'none', // El overlay no bloquea clics
+  };
 
-    // Estilos en línea para los botones
-    const buttonStyle = {
-        margin: '10px',
-        padding: '10px 20px',
-        fontSize: '1rem',
-        backgroundColor: '#ff6b6b',
-        color: 'white',
-        border: 'none',
-        borderRadius: '5px',
-        cursor: 'pointer',
-        boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.2)',
-        transition: 'background-color 0.3s ease',
-    };
+  // Puedes añadir esta @keyframes en tu CSS global:
+  // @keyframes pulseOverlay {
+  //   0%   {opacity: 0.6;}
+  //   100% {opacity: 0.9;}
+  // }
 
-    // Estilo adicional para el hover
-    const buttonHoverStyle = {
-        backgroundColor: '#ff8787',
-    };
+  // Contenedor centrado
+  const containerStyle = {
+    position: 'relative',
+    zIndex: 2,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100vh',
+  };
 
-    return (
-        <div style={backgroundStyle}>
-            <div style={contentBoxStyle}>
-                <h1 style={{ color: '#ff6b6b', fontWeight: 'bold', marginBottom: '15px' }}>Bienvenidos a MyLover!</h1>
-                <p style={{ color: '#555', lineHeight: '1.6', marginBottom: '20px' }}>
-                    Este es un lugar especial para nosotros, para recordar y planificar nuestro futuro juntos.
-                </p>
+  // Caja principal
+  const contentBoxStyle = {
+    backgroundColor: 'rgba(255, 255, 255, 0.86)',
+    borderRadius: '16px',
+    padding: '2.5rem 3rem',
+    maxWidth: '600px',
+    width: '90%',
+    boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+    textAlign: 'center',
+    backdropFilter: 'blur(6px)', // Si quieres un efecto glass
+  };
 
-                <div>
-                    <button
-                        style={buttonStyle}
-                        onMouseEnter={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}
-                        onMouseLeave={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
-                        onClick={() => alert('Ir a miLover')}
-                    >
-                        Ir a miLover
-                    </button>
-                    <button
-                        style={buttonStyle}
-                        onMouseEnter={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}
-                        onMouseLeave={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
-                        onClick={() => navigate('/calendar')} // Redirige a la página del calendario
-                    >
-                        Ver Calendario 
-                    </button>
-                    <button 
-                        style={buttonStyle}
-                        onMouseEnter={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}
-                        onMouseLeave={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
-                        onClick={() => navigate('/friends')} 
-                    >
-                        Gestionar Amigos
-                    </button>
-                    <button
-                        style={buttonStyle}
-                        onMouseEnter={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}
-                        onMouseLeave={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
-                        onClick={() => navigate('/send-letter')}
-                        >
-                        Enviar Carta
-                    </button>
+  // Título con Great Vibes
+  const titleStyle = {
+    fontFamily: "'Great Vibes', cursive",
+    color: '#ff6b6b',
+    fontSize: '3rem',
+    fontWeight: 400,
+    marginBottom: '0.5rem',
+  };
 
-                    <button
-                        style={buttonStyle}
-                        onMouseEnter={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}
-                        onMouseLeave={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
-                        onClick={() => navigate('/received-letters')}
-                        >
-                        Cartas Recibidas
-                    </button>
-                    
+  const subtitleStyle = {
+    color: '#555',
+    fontSize: '1.1rem',
+    marginBottom: '2.2rem',
+  };
 
-                    <button
-                        style={buttonStyle}
-                        onMouseEnter={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}
-                        onMouseLeave={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
-                        onClick={() => navigate('/profile')} // Redirige a la página de perfil
-                    >
-                        Ver Perfil
-                    </button>
+  // Grid de botones
+  const buttonGridStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+    gap: '1rem',
+    justifyItems: 'center'
+  };
 
-                    <button 
-                        style={buttonStyle}
-                        onMouseEnter={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}
-                        onMouseLeave={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
-                        onClick={onLogout}>
-                        Cerrar Sesión
-                    </button>
-                </div>
-            </div>
+  const buttonStyle = {
+    backgroundColor: '#ff6b6b',
+    border: 'none',
+    borderRadius: '8px',
+    color: 'white',
+    padding: '0.8rem 1.2rem',
+    fontSize: '1rem',
+    cursor: 'pointer',
+    boxShadow: '2px 3px 6px rgba(0,0,0,0.15)',
+    transition: 'all 0.3s ease',
+    fontWeight: 600,
+  };
+
+  const handleMouseEnter = (e) => {
+    e.target.style.backgroundColor = '#ff8f8f';
+    e.target.style.transform = 'translateY(-4px)';
+    e.target.style.boxShadow = '2px 6px 10px rgba(0,0,0,0.25)';
+  };
+
+  const handleMouseLeave = (e) => {
+    e.target.style.backgroundColor = '#ff6b6b';
+    e.target.style.transform = 'none';
+    e.target.style.boxShadow = '2px 3px 6px rgba(0,0,0,0.15)';
+  };
+
+  return (
+    <div style={backgroundStyle}>
+      {/* Overlay animado */}
+      <div style={overlayStyle}></div>
+
+      <div style={containerStyle}>
+        <div style={contentBoxStyle}>
+          <h1 style={titleStyle}>Bienvenidos a MyLover!</h1>
+          <p style={subtitleStyle}>
+            Este es un lugar especial para nosotros, para recordar y planificar
+            nuestro futuro juntos.
+          </p>
+
+          <div style={buttonGridStyle}>
+            <button
+              style={buttonStyle}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onClick={() => navigate('/calendar')}
+            >
+              Ver Calendario
+            </button>
+            
+            <button
+              style={buttonStyle}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onClick={() => navigate('/friends')}
+            >
+              Gestionar Amigos
+            </button>
+
+            <button
+              style={buttonStyle}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onClick={() => navigate('/send-letter')}
+            >
+              Enviar Carta
+            </button>
+
+            <button
+              style={buttonStyle}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onClick={() => navigate('/received-letters')}
+            >
+              Cartas Recibidas
+            </button>
+
+            <button
+              style={buttonStyle}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onClick={() => navigate('/profile')}
+            >
+              Ver Perfil
+            </button>
+
+            <button
+              style={buttonStyle}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onClick={onLogout}
+            >
+              Cerrar Sesión
+            </button>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
 
 export default HomePage;
