@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 function HomePage({ onLogout }) {
   const navigate = useNavigate();
 
-  // Fondo con imagen
+  // Estilos de fondo
   const backgroundStyle = {
     position: 'relative',
     minHeight: '100vh',
@@ -12,26 +12,18 @@ function HomePage({ onLogout }) {
     fontFamily: "'Open Sans', sans-serif"
   };
 
-  // Overlay con un gradiente rosado y una leve animación “sparkling”
+  // Overlay con gradiente
   const overlayStyle = {
     position: 'absolute',
     top: 0,
     left: 0,
     width: '100%',
     height: '100%',
-    background:
-      'linear-gradient(160deg, rgba(255, 200, 220, 0.3), rgba(255, 180, 210, 0.4))',
+    background: 'linear-gradient(160deg, rgba(255, 200, 220, 0.3), rgba(255, 180, 210, 0.4))',
     animation: 'pulseOverlay 6s ease-in-out infinite alternate',
-    pointerEvents: 'none', // El overlay no bloquea clics
+    pointerEvents: 'none',
   };
 
-  // Puedes añadir esta @keyframes en tu CSS global:
-  // @keyframes pulseOverlay {
-  //   0%   {opacity: 0.6;}
-  //   100% {opacity: 0.9;}
-  // }
-
-  // Contenedor centrado
   const containerStyle = {
     position: 'relative',
     zIndex: 2,
@@ -42,7 +34,6 @@ function HomePage({ onLogout }) {
     minHeight: '100vh',
   };
 
-  // Caja principal
   const contentBoxStyle = {
     backgroundColor: 'rgba(255, 255, 255, 0.86)',
     borderRadius: '16px',
@@ -51,10 +42,9 @@ function HomePage({ onLogout }) {
     width: '90%',
     boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
     textAlign: 'center',
-    backdropFilter: 'blur(6px)', // Si quieres un efecto glass
+    backdropFilter: 'blur(6px)',
   };
 
-  // Título con Great Vibes
   const titleStyle = {
     fontFamily: "'Great Vibes', cursive",
     color: '#ff6b6b',
@@ -104,7 +94,6 @@ function HomePage({ onLogout }) {
 
   return (
     <div style={backgroundStyle}>
-      {/* Overlay animado */}
       <div style={overlayStyle}></div>
 
       <div style={containerStyle}>
@@ -116,6 +105,8 @@ function HomePage({ onLogout }) {
           </p>
 
           <div style={buttonGridStyle}>
+
+            {/* Botones existentes */}
             <button
               style={buttonStyle}
               onMouseEnter={handleMouseEnter}
@@ -159,6 +150,26 @@ function HomePage({ onLogout }) {
               onClick={() => navigate('/profile')}
             >
               Ver Perfil
+            </button>
+
+            {/* Botón para ver la Galería */}
+            <button
+              style={buttonStyle}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onClick={() => navigate('/gallery')}
+            >
+              Ir a la Galería
+            </button>
+
+            {/* Botón para subir foto */}
+            <button
+              style={buttonStyle}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onClick={() => navigate('/upload-photo')}
+            >
+              Subir Foto
             </button>
 
             <button

@@ -2,21 +2,25 @@ package com.myLover.lover.model;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import io.micrometer.common.lang.NonNull;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @SuppressWarnings("null")
     @Override
-    @NonNull
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:3000")
+                .allowedOriginPatterns("http://localhost:3000")  // ✅ Usa esto en lugar de allowedOrigins("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
+    }
+
+     @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry
+            .addResourceHandler("/uploads/**")
+            .addResourceLocations("file:uploads/");
     }
 }
