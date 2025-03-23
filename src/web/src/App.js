@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-// Importa tus páginas existentes
 import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
@@ -10,6 +9,7 @@ import ProfilePage from './components/ProfilePage';
 import FriendsPage from './components/FriendsPage';
 import SendLetterPage from './components/SendLetterPage';
 import ReceivedLettersPage from './components/ReceivedLettersPage';
+import EventosImportantesPage from './components/EventList';
 
 // Importa la galería y la página de subir foto
 import PhotoGallery from './components/PhotoGallery';
@@ -85,6 +85,12 @@ function App() {
           path="/upload-photo"
           element={isAuthenticated ? <UploadPhoto /> : <Navigate to="/login" />}
         />
+
+        <Route
+          path="/eventos"
+          element={isAuthenticated ? <EventosImportantesPage /> : <Navigate to="/login" />}
+        />
+
 
         {/* 404 */}
         <Route

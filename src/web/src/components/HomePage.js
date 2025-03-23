@@ -151,8 +151,6 @@ function HomePage({ onLogout }) {
             >
               Ver Perfil
             </button>
-
-            {/* Botón para ver la Galería */}
             <button
               style={buttonStyle}
               onMouseEnter={handleMouseEnter}
@@ -162,7 +160,6 @@ function HomePage({ onLogout }) {
               Ir a la Galería
             </button>
 
-            {/* Botón para subir foto */}
             <button
               style={buttonStyle}
               onMouseEnter={handleMouseEnter}
@@ -171,6 +168,14 @@ function HomePage({ onLogout }) {
             >
               Subir Foto
             </button>
+            <button
+                style={buttonStyle}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onClick={() => navigate('/eventos')}
+              >
+                Eventos Importantes
+              </button>
 
             <button
               style={buttonStyle}
