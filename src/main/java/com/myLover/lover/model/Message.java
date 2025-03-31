@@ -9,12 +9,11 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String senderEmail;      // Quién envía
-    private String receiverEmail;    // Quién recibe
-    private String content;          // Texto
-    private LocalDateTime timestamp; // Fecha/hora del mensaje
+    private String senderEmail;      
+    private String receiverEmail;   
+    private String content;          
+    private LocalDateTime timestamp;
 
-    // Getters y Setters
     public Long getId() {
         return id;
     }

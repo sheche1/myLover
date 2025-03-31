@@ -168,11 +168,11 @@ function HomePage({ onLogout }) {
             >
               Subir Foto
             </button>
-            <button
+              <button
                 style={buttonStyle}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                onClick={() => navigate('/eventos')}
+                onClick={() => navigate('/important-events')}
               >
                 Eventos Importantes
               </button>

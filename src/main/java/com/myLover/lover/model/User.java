@@ -23,27 +23,21 @@ public class User {
     @Column(name = "name", nullable = false)
     private String nombre;
 
-    // Nuevo: Tu apellido
     @Column(nullable = false)
     private String apellido;
 
-    // Nuevo: Nombre de tu pareja
     @Column(nullable = false)
     private String nombrePareja;
 
-    // Nuevo: Apellido de tu pareja
     @Column(nullable = false)
     private String apellidoPareja;
 
-    // Nuevo: Tu fecha de nacimiento
     @Column(name = "birth_date", nullable = false)
     private LocalDate fechaNacimiento;
 
-    // Nuevo: Fecha de nacimiento de tu pareja
     @Column(name = "partner_birth_date", nullable = false)
     private LocalDate fechaNacimientoPareja;
 
-    // Nuevo: El primer día que conociste a tu pareja
     @Column(name = "first_meet_date", nullable = false)
     private LocalDate fechaPrimerEncuentro;
 
@@ -59,7 +53,6 @@ public class User {
 
     private String status = "No establecido"; 
     
-    // Getters y Setters
 
     public Long getId() {
         return id;

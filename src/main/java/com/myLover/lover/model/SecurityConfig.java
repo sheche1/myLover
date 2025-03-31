@@ -46,8 +46,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Desactiva CSRF si no es necesario
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Aplica CORS
+            .csrf(csrf -> csrf.disable()) 
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())) 
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                 .anyRequest().authenticated()
@@ -57,12 +57,11 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // 🔥 Nueva configuración de CORS
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("http://localhost:3000")); // ✅ Cambia * por un dominio específico
+        config.setAllowedOriginPatterns(List.of("http://localhost:3000")); 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -70,11 +69,11 @@ public class SecurityConfig {
         return new CorsFilter(source);
     }
 
-    // Método para proporcionar la configuración de CORS
+
     private UrlBasedCorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("http://localhost:3000")); // ✅ Cambia * por un dominio específico
+        config.setAllowedOriginPatterns(List.of("http://localhost:3000")); 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -83,7 +82,7 @@ public class SecurityConfig {
     }
 
 public void configure(WebSecurity web) {
-    web.ignoring().requestMatchers("/uploads/**"); // Permitir acceso sin autenticación a imágenes
+    web.ignoring().requestMatchers("/uploads/**");
 }
 
 }

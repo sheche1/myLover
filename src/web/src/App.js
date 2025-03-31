@@ -9,9 +9,7 @@ import ProfilePage from './components/ProfilePage';
 import FriendsPage from './components/FriendsPage';
 import SendLetterPage from './components/SendLetterPage';
 import ReceivedLettersPage from './components/ReceivedLettersPage';
-import EventosImportantesPage from './components/EventList';
-
-// Importa la galería y la página de subir foto
+import ImportantEventList from './components/ImportantEventList';
 import PhotoGallery from './components/PhotoGallery';
 import UploadPhoto from './components/UploadPhoto';
 
@@ -48,13 +46,11 @@ function App() {
           element={isAuthenticated ? <Navigate to="/" /> : <RegisterPage />}
         />
 
-        {/* Home protegida (si no autenticado → /login) */}
         <Route
           path="/"
           element={isAuthenticated ? <HomePage onLogout={handleLogout} /> : <Navigate to="/login" />}
         />
 
-        {/* Otras páginas protegidas */}
         <Route
           path="/calendar"
           element={isAuthenticated ? <CalendarPage /> : <Navigate to="/login" />}
@@ -75,8 +71,7 @@ function App() {
           path="/received-letters"
           element={isAuthenticated ? <ReceivedLettersPage /> : <Navigate to="/login" />}
         />
-
-        {/* NUEVAS rutas para la galería de fotos */}
+        
         <Route
           path="/gallery"
           element={isAuthenticated ? <PhotoGallery /> : <Navigate to="/login" />}
@@ -87,10 +82,9 @@ function App() {
         />
 
         <Route
-          path="/eventos"
-          element={isAuthenticated ? <EventosImportantesPage /> : <Navigate to="/login" />}
+          path="/important-events"
+          element={isAuthenticated ? <ImportantEventList /> : <Navigate to="/login" />}
         />
-
 
         {/* 404 */}
         <Route
