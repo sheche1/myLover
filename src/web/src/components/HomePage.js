@@ -177,6 +177,16 @@ function HomePage({ onLogout }) {
                 Eventos Importantes
               </button>
 
+            <button 
+                style={buttonStyle}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onClick={() => navigate('/goals')}
+              >
+              Metas de pareja
+            </button>
+
+
             <button
               style={buttonStyle}
               onMouseEnter={handleMouseEnter}

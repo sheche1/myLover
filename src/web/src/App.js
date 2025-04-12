@@ -12,6 +12,7 @@ import ReceivedLettersPage from './components/ReceivedLettersPage';
 import ImportantEventList from './components/ImportantEventList';
 import PhotoGallery from './components/PhotoGallery';
 import UploadPhoto from './components/UploadPhoto';
+import GoalsPage from './components/GoalsPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -85,6 +86,10 @@ function App() {
           path="/important-events"
           element={isAuthenticated ? <ImportantEventList /> : <Navigate to="/login" />}
         />
+
+        <Route 
+        path="/goals" element={isAuthenticated ? <GoalsPage /> : <Navigate to="/login" />}
+         />
 
         {/* 404 */}
         <Route
