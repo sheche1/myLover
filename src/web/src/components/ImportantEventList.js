@@ -1,319 +1,336 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import './css/ImportantEventList.css';
 
 function ImportantEventList() {
   const [events, setEvents] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
   const [editId, setEditId] = useState(null);
+  const [groupTitle, setGroupTitle] = useState('');
+  const [groupDescription, setGroupDescription] = useState('');
+  const [groupPhoto, setGroupPhoto] = useState(null);
+  const [selectedEvents, setSelectedEvents] = useState([]);
+  const [groupEditId, setGroupEditId] = useState(null);
+  const [expandedGroups, setExpandedGroups] = useState([]);
+  const [expandedEventId, setExpandedEventId] = useState(null);
+
 
   useEffect(() => {
-    fetchEvents();
+    fetchData();
+    const intervalId = setInterval(() => fetchData(), 3000);
+    return () => clearInterval(intervalId);
   }, []);
+
+  const fetchData = async () => {
+    fetchEvents();
+    fetchGroups();
+  };
 
   const fetchEvents = async () => {
     try {
-      const email = localStorage.getItem('email');
-      const password = localStorage.getItem('password');
-      const credentials = btoa(`${email}:${password}`);
-
-      const response = await fetch('http://localhost:8080/api/important-events', {
-        method: 'GET',
-        headers: { 'Authorization': `Basic ${credentials}` }
+      const res = await fetch('http://localhost:8080/api/important-events', {
+        headers: { Authorization: `Basic ${getCredentials()}` }
       });
-      if (!response.ok) {
-        throw new Error('Failed to fetch events');
-      }
-      const data = await response.json();
+      const data = await res.json();
       setEvents(data);
-    } catch (error) {
-      console.error('Error fetching events:', error);
-      alert('Could not load events');
-    }
+    } catch {}
+  };
+
+  const fetchGroups = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/api/event-groups', {
+        headers: { Authorization: `Basic ${getCredentials()}` }
+      });
+      const data = await res.json();
+      setGroups(data);
+    } catch {}
+  };
+
+  const getCredentials = () => {
+    const email = localStorage.getItem('email');
+    const password = localStorage.getItem('password');
+    return btoa(`${email}:${password}`);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const body = { title, description, date };
+    let url = 'http://localhost:8080/api/important-events';
+    let method = 'POST';
+    if (editId) {
+      url = `http://localhost:8080/api/important-events/${editId}`;
+      method = 'PUT';
+    }
     try {
-      const email = localStorage.getItem('email');
-      const password = localStorage.getItem('password');
-      const credentials = btoa(`${email}:${password}`);
-
-      const newEvent = { title, description, date };
-      let url = 'http://localhost:8080/api/important-events';
-      let method = 'POST';
-
-      if (editId) {
-        url = `http://localhost:8080/api/important-events/${editId}`;
-        method = 'PUT';
-      }
-
-      const resp = await fetch(url, {
+      await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Basic ${credentials}`
+          Authorization: `Basic ${getCredentials()}`
         },
-        body: JSON.stringify(newEvent)
+        body: JSON.stringify(body)
       });
-
-      if (!resp.ok) {
-        throw new Error('Failed to save event');
-      }
-
       setTitle('');
       setDescription('');
       setDate('');
       setEditId(null);
       fetchEvents();
-
-    } catch (error) {
-      console.error('Error saving event:', error);
-      alert('Could not save event');
-    }
+    } catch {}
   };
 
-  const handleEdit = (eventItem) => {
-    setTitle(eventItem.title);
-    setDescription(eventItem.description);
-    setDate(eventItem.date);
-    setEditId(eventItem.id);
+  const handleEdit = (ev) => {
+    setTitle(ev.title);
+    setDescription(ev.description);
+    setDate(ev.date);
+    setEditId(ev.id);
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this event?')) return;
-
+    if (!window.confirm('¿Eliminar este evento?')) return;
     try {
-      const email = localStorage.getItem('email');
-      const password = localStorage.getItem('password');
-      const credentials = btoa(`${email}:${password}`);
-
-      const resp = await fetch(`http://localhost:8080/api/important-events/${id}`, {
+      await fetch(`http://localhost:8080/api/important-events/${id}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Basic ${credentials}` }
+        headers: { Authorization: `Basic ${getCredentials()}` }
       });
-
-      if (!resp.ok) {
-        throw new Error('Failed to delete event');
-      }
-
       fetchEvents();
-    } catch (error) {
-      console.error('Error deleting event:', error);
-      alert('Could not delete event');
+    } catch {}
+  };
+
+  const handleEventSelect = (id) => {
+    setSelectedEvents((p) => (
+      p.includes(id) ? p.filter((x) => x !== id) : [...p, id]
+    ));
+  };
+
+  const handleGroupSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('title', groupTitle);
+    formData.append('description', groupDescription);
+    if (groupPhoto) formData.append('photo', groupPhoto);
+    selectedEvents.forEach((id) => formData.append('eventIds', id));
+    let url = 'http://localhost:8080/api/event-groups';
+    let method = 'POST';
+    if (groupEditId) {
+      url = `http://localhost:8080/api/event-groups/${groupEditId}`;
+      method = 'PUT';
     }
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { Authorization: `Basic ${getCredentials()}` },
+        body: formData
+      });
+      if (res.ok) {
+        setGroupTitle('');
+        setGroupDescription('');
+        setGroupPhoto(null);
+        setSelectedEvents([]);
+        setGroupEditId(null);
+        fetchData();
+        alert(groupEditId ? 'Colección actualizada' : 'Colección creada');
+      } else {
+        alert('Error al guardar la colección');
+      }
+    } catch {}
   };
 
-
-  const pageStyles = {
-    minHeight: '100vh',
-    background: 'linear-gradient(135deg, #fff9f9 20%, #ffebf0 80%)',
-    padding: '2rem',
-    fontFamily: "'Poppins', sans-serif"
+  const handleDeleteGroup = async (id) => {
+    if (!window.confirm('¿Eliminar esta colección?')) return;
+    try {
+      const res = await fetch(`http://localhost:8080/api/event-groups/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Basic ${getCredentials()}` }
+      });
+      if (res.ok) {
+        fetchData();
+        alert('Colección eliminada');
+      }
+    } catch {}
   };
 
-  const containerStyles = {
-    maxWidth: '800px',
-    margin: '0 auto',
-    backgroundColor: '#ffffffcc',
-    backdropFilter: 'blur(4px)',
-    boxShadow: '0 10px 20px rgba(0,0,0,0.15)',
-    borderRadius: '16px',
-    padding: '2rem'
+  const handleEditGroup = (g) => {
+    setGroupTitle(g.title);
+    setGroupDescription(g.description);
+    setGroupEditId(g.id);
+    const evs = events
+      .filter((e) => e.group && e.group.id === g.id)
+      .map((e) => e.id);
+    setSelectedEvents(evs);
   };
 
-  const titleStyles = {
-    textAlign: 'center',
-    fontSize: '2.2rem',
-    fontWeight: 'bold',
-    color: '#ff6b6b',
-    marginBottom: '1.5rem',
-  };
-
-  const formStyles = {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '0.5rem',
-    marginBottom: '2rem',
-    justifyContent: 'center',
-  };
-
-  const inputStyles = {
-    flex: '1 1 150px',
-    minWidth: '120px',
-    padding: '0.6rem',
-    borderRadius: '8px',
-    border: '1px solid #ccc',
-    fontSize: '1rem',
-    backgroundColor: '#fff'
-  };
-
-  const buttonAddStyles = {
-    padding: '0.6rem 1.2rem',
-    borderRadius: '8px',
-    border: 'none',
-    backgroundColor: '#ff6b6b',
-    color: '#fff',
-    fontSize: '1rem',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s',
-    fontWeight: 'bold',
-    marginTop: '0.3rem'
-  };
-
-  const buttonAddHoverStyles = {
-    backgroundColor: '#ff8f8f'
-  };
-
-  const handleAddMouseEnter = (e) => {
-    Object.assign(e.target.style, buttonAddHoverStyles);
-  };
-  const handleAddMouseLeave = (e) => {
-    Object.assign(e.target.style, buttonAddStyles);
-  };
-
-  const listStyles = {
-    listStyle: 'none',
-    padding: 0,
-    margin: 0,
-  };
-
-  const eventCardStyles = {
-    backgroundColor: '#fff',
-    borderRadius: '12px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-    padding: '1rem',
-    marginBottom: '1rem',
-    transition: 'transform 0.2s ease',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem'
-  };
-
-  const eventCardHover = (e) => {
-    e.currentTarget.style.transform = 'translateY(-4px)';
-    e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.15)';
-  };
-  const eventCardLeave = (e) => {
-    e.currentTarget.style.transform = 'none';
-    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-  };
-
-  const eventTitleStyles = {
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-    color: '#333',
-    margin: 0
-  };
-
-  const eventDescStyles = {
-    margin: 0,
-    color: '#555',
-    fontSize: '0.95rem'
-  };
-
-  const eventDateStyles = {
-    fontStyle: 'italic',
-    color: '#777',
-    fontSize: '0.9rem'
-  };
-
-  const buttonRowStyles = {
-    display: 'flex',
-    gap: '0.5rem'
-  };
-
-  const buttonStyles = {
-    padding: '0.4rem 0.8rem',
-    border: 'none',
-    borderRadius: '6px',
-    fontSize: '0.9rem',
-    cursor: 'pointer',
-    transition: 'background-color 0.2s ease',
-    color: '#fff'
-  };
-
-  const editButtonStyles = {
-    ...buttonStyles,
-    backgroundColor: '#3fa7fc'
-  };
-
-  const deleteButtonStyles = {
-    ...buttonStyles,
-    backgroundColor: '#ff6b6b'
+  const toggleGroup = (id) => {
+    setExpandedGroups((p) => (
+      p.includes(id) ? p.filter((x) => x !== id) : [...p, id]
+    ));
   };
 
   return (
-    <div style={pageStyles}>
-      <div style={containerStyles}>
-        <h2 style={titleStyles}>Important Events</h2>
-        <form onSubmit={handleSubmit} style={formStyles}>
+    <div className="event-page">
+      <div className="event-container">
+        <h2 className="event-title">📅 Línea de Tiempo</h2>
+        <form className="event-form" onSubmit={handleSubmit}>
           <input
             type="text"
-            placeholder="Title"
-            style={inputStyles}
+            placeholder="Título"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
           />
           <input
             type="text"
-            placeholder="Description"
-            style={inputStyles}
+            placeholder="Descripción"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
           />
           <input
             type="date"
-            style={inputStyles}
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
           />
-          <button
-            type="submit"
-            style={buttonAddStyles}
-            onMouseEnter={handleAddMouseEnter}
-            onMouseLeave={handleAddMouseLeave}
-          >
-            {editId ? 'Save Changes' : 'Add Event'}
+          <button type="submit">
+            {editId ? 'Guardar cambios' : 'Añadir evento'}
           </button>
         </form>
 
-        {events.length === 0 ? (
-          <p>No events found.</p>
-        ) : (
-          <ul style={listStyles}>
-            {events.map((eventItem) => (
-              <li
-                key={eventItem.id}
-                style={eventCardStyles}
-                onMouseEnter={eventCardHover}
-                onMouseLeave={eventCardLeave}
-              >
-                <p style={eventTitleStyles}>{eventItem.title}</p>
-                <p style={eventDescStyles}>{eventItem.description}</p>
-                <p style={eventDateStyles}>Date: {eventItem.date}</p>
-                <div style={buttonRowStyles}>
-                  <button
-                    style={editButtonStyles}
-                    onClick={() => handleEdit(eventItem)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    style={deleteButtonStyles}
-                    onClick={() => handleDelete(eventItem.id)}
-                  >
-                    Delete
-                  </button>
+        <h3 className="event-title">📦 Crear nueva colección</h3>
+        <form className="event-form" onSubmit={handleGroupSubmit}>
+          <input
+            type="text"
+            placeholder="Título del conjunto"
+            value={groupTitle}
+            onChange={(e) => setGroupTitle(e.target.value)}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Descripción del conjunto"
+            value={groupDescription}
+            onChange={(e) => setGroupDescription(e.target.value)}
+            required
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setGroupPhoto(e.target.files[0])}
+          />
+          <div className="select-events">
+            <p>Selecciona los eventos:</p>
+            <ul>
+              {events.map((ev) => (
+                <li key={ev.id}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={selectedEvents.includes(ev.id)}
+                      onChange={() => handleEventSelect(ev.id)}
+                    />
+                    {ev.title} ({ev.date})
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <button type="submit">
+            {groupEditId ? 'Actualizar colección' : 'Crear colección'}
+          </button>
+        </form>
+
+        <h3 className="event-title">📂 Colecciones creadas</h3>
+        {groups.map((g) => {
+          const expanded = expandedGroups.includes(g.id);
+          return (
+            <div
+              key={g.id}
+              className="event-group"
+              onClick={() => toggleGroup(g.id)}
+            >
+              <div className="group-header">
+                <h2 className="group-title">{g.title}</h2>
+              </div>
+              <div className="group-body">
+                <div className="group-description">{g.description}</div>
+                <div className="image-container">
+                  {g.photoUrl && (
+                    <img
+                      src={`http://localhost:8080${g.photoUrl}`}
+                      alt="Portada"
+                    />
+                  )}
                 </div>
-              </li>
-            ))}
-          </ul>
-        )}
+              </div>
+              <div className="group-footer">
+                Número de eventos: {g.events ? g.events.length : 0}
+              </div>
+              <div
+                className={`event-group-content ${expanded ? 'expanded' : ''}`}
+              >
+                <ul>
+                  {g.events && g.events.map((ev, i) => (
+                    <li
+                        key={ev.id}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setExpandedEventId(expandedEventId === ev.id ? null : ev.id);
+                        }}
+                        className={`event-item ${expandedEventId === ev.id ? 'expanded' : ''}`}
+                        style={{ '--i': i }}
+                      >
+                        <div className="event-title-line">
+                          📌 {ev.title}
+                        </div>
+                        {expandedEventId === ev.id && (
+                          <div className="event-extra-info">
+                            <p><strong>Descripción:</strong> {ev.description}</p>
+                            <p><strong>Fecha:</strong> {ev.date}</p>
+                          </div>
+                        )}
+                      </li>
+                  ))}
+                </ul>
+              </div>
+              <div
+                className="event-actions"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button className="edit" onClick={() => handleEditGroup(g)}>
+                  Editar
+                </button>
+                <button className="delete" onClick={() => handleDeleteGroup(g.id)}>
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          );
+        })}
+
+        <h3 className="event-title">📌 Todos los eventos</h3>
+        {events.map((ev) => (
+          <div key={ev.id} className="event-card">
+            <h4>{ev.title}</h4>
+            <p>{ev.description}</p>
+            <p className="date">Fecha: {ev.date}</p>
+            <div className="event-actions">
+              <button className="edit" onClick={() => handleEdit(ev)}>
+                Editar
+              </button>
+              <button className="delete" onClick={() => handleDelete(ev.id)}>
+                Eliminar
+              </button>
+            </div>
+          </div>
+        ))}
+
+        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+          <Link to="/" className="go-home-btn">
+            Volver a Home
+          </Link>
+        </div>
       </div>
     </div>
   );

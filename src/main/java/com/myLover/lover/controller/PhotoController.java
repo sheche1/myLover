@@ -2,7 +2,6 @@ package com.myLover.lover.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,7 +30,7 @@ public class PhotoController {
 
     @GetMapping
     public ResponseEntity<List<Photo>> getUserPhotos(Principal principal) {
-        String email = principal.getName(); // Obtener email del usuario autenticado
+        String email = principal.getName();
         User user = userRepository.findUserByEmail(email)
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     
@@ -64,7 +63,7 @@ public class PhotoController {
             photo.setUrl(fileUrl);
             photo.setCategory(category);
             photo.setDescription(description);
-            photo.setUser(user); // Asigna la foto al usuario autenticado
+            photo.setUser(user); 
             photoRepository.save(photo);
     
             return ResponseEntity.ok("Imagen subida con éxito: " + filename);

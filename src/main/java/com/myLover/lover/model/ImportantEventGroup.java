@@ -1,29 +1,35 @@
 package com.myLover.lover.model;
 
-import java.time.LocalDate;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
-public class ImportantEvent {
-
+public class ImportantEventGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
     private String description;
-    private LocalDate date;
+    private String photoUrl;
 
     @ManyToOne
     private User user;
-
-    @ManyToOne
-    private ImportantEventGroup group;
+    
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("group") 
+    private List<ImportantEvent> events;
+    
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -34,17 +40,18 @@ public class ImportantEvent {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public LocalDate getDate() { return date; }
-    public void setDate(LocalDate date) { this.date = date; }
+    public String getPhotoUrl() { return photoUrl; }
+    public void setPhotoUrl(String photoUrl) { this.photoUrl = photoUrl; }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
-    public ImportantEventGroup getGroup() {
-        return group;
+    public List<ImportantEvent> getEvents() {
+        return events;
     }
-    public void setGroup(ImportantEventGroup group) {
-        this.group = group;
+    public void setEvents(List<ImportantEvent> events) {
+        this.events = events;
     }
 
-    
+
 }
+
