@@ -13,6 +13,7 @@ import ImportantEventList from './components/ImportantEventList';
 import PhotoGallery from './components/PhotoGallery';
 import UploadPhoto from './components/UploadPhoto';
 import GoalsPage from './components/GoalsPage';
+import MemoryMapPage from './components/MemoryMapPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -88,8 +89,14 @@ function App() {
         />
 
         <Route 
-        path="/goals" element={isAuthenticated ? <GoalsPage /> : <Navigate to="/login" />}
+          path="/goals" 
+          element={isAuthenticated ? <GoalsPage /> : <Navigate to="/login" />}
          />
+
+        <Route
+          path="/memory-map"
+          element={isAuthenticated ? <MemoryMapPage /> : <Navigate to="/login" />}
+        />
 
         {/* 404 */}
         <Route

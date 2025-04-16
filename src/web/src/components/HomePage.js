@@ -186,7 +186,14 @@ function HomePage({ onLogout }) {
               Metas de pareja
             </button>
 
-
+            <button
+              style={buttonStyle}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onClick={() => navigate('/memory-map')}
+            >
+              Mapa de Recuerdos
+            </button>
             <button
               style={buttonStyle}
               onMouseEnter={handleMouseEnter}
