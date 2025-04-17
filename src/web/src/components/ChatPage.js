@@ -9,7 +9,6 @@ function ChatPage({ myEmail, friendEmail }) {
 
   const stompClientRef = useRef(null);
 
-  // Generar la "roomId" igual que en el servidor
   const createRoomId = (email1, email2) => {
     return (email1 < email2)
       ? email1 + '_' + email2
@@ -17,21 +16,16 @@ function ChatPage({ myEmail, friendEmail }) {
   };
 
   useEffect(() => {
-    // 1) Conectarse al endpoint WebSocket
     const socket = new SockJS('http://localhost:8080/ws');
     const stompClient = Stomp.over(socket);
-
-    // Para ocultar logs excesivos
     stompClient.debug = null;
 
     stompClient.connect({}, () => {
       console.log('Conectado a STOMP');
       setConnected(true);
 
-      // 2) Suscribirse al canal de la "room"
       const roomId = createRoomId(myEmail, friendEmail);
       stompClient.subscribe(`/topic/chat/${roomId}`, (frame) => {
-        // Recibimos un mensaje
         const chatMessage = JSON.parse(frame.body);
         setMessages(prev => [...prev, chatMessage]);
       });
@@ -41,7 +35,6 @@ function ChatPage({ myEmail, friendEmail }) {
 
     stompClientRef.current = stompClient;
 
-    // Al desmontar el componente, desconectar
     return () => {
       if (stompClientRef.current) {
         stompClientRef.current.disconnect(() => {
@@ -49,20 +42,17 @@ function ChatPage({ myEmail, friendEmail }) {
         });
       }
     };
-  }, [myEmail, friendEmail]); // Se ejecuta cuando cambie friendEmail
+  }, [myEmail, friendEmail]);
 
-  // Enviar un mensaje
   const sendMessage = () => {
     if (!newMsg.trim()) return;
     if (!connected || !stompClientRef.current) return;
 
     const roomId = createRoomId(myEmail, friendEmail);
-    // Estructuramos el ChatMessage
     const chatMessage = {
       sender: myEmail,
       receiver: friendEmail,
       content: newMsg.trim()
-      // timestamp se rellena en el servidor
     };
 
     stompClientRef.current.publish({
