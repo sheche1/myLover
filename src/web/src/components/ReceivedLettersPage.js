@@ -5,24 +5,19 @@ function ReceivedLettersPage() {
   const [letters, setLetters] = useState([]);
   const [expandedIndex, setExpandedIndex] = useState(null);
 
-  // Para contraseñas antes de la fecha
   const [passwordPromptIndex, setPasswordPromptIndex] = useState(null);
   const [enteredPassword, setEnteredPassword] = useState('');
 
-  // NUEVO: Array de índices de cartas que se han desbloqueado por contraseña
   const [unlockedIndices, setUnlockedIndices] = useState([]);
 
   const navigate = useNavigate();
   const myEmail = localStorage.getItem('email') || '';
   const myPassword = localStorage.getItem('password') || '';
 
-  // Cargar las cartas al montar
   useEffect(() => {
     loadLetters();
-    // eslint-disable-next-line
   }, []);
 
-  // 1) Cargar cartas (GET)
   const loadLetters = async () => {
     try {
       const resp = await fetch(`http://localhost:8080/api/letters?receiverEmail=${myEmail}`, {
@@ -43,9 +38,8 @@ function ReceivedLettersPage() {
     }
   };
 
-  // 2) Eliminar carta (DELETE)
   const handleDelete = async (letterId, e) => {
-    e.stopPropagation(); // Evita expandir la carta al pulsar el botón
+    e.stopPropagation();
     if (!window.confirm('¿Seguro que deseas eliminar esta carta?')) return;
 
     try {
@@ -66,7 +60,6 @@ function ReceivedLettersPage() {
     }
   };
 
-  // 3) Click en la carta => expandir, pedir contraseña si hace falta
   const handleCardClick = (index) => {
     const letter = letters[index];
     let unlockDateObj = null;
@@ -75,31 +68,24 @@ function ReceivedLettersPage() {
     }
     const now = new Date();
 
-    // Si no hay fecha o ya pasó => expandir directo
     if (!unlockDateObj || now >= unlockDateObj) {
       setExpandedIndex(index);
       setPasswordPromptIndex(null);
       return;
     }
 
-    // Si la fecha aún no llega
     if (letter.secretPassword) {
-      // Mostrar modal para introducir contraseña
       setPasswordPromptIndex(index);
     } else {
       alert(`Esta carta está bloqueada hasta: ${letter.unlockDate}`);
     }
   };
 
-  // 4) Verificar contraseña en el modal
   const handleCheckPassword = () => {
     if (passwordPromptIndex === null) return;
     const letter = letters[passwordPromptIndex];
-    // Comparar
     if (enteredPassword === letter.secretPassword) {
-      // Contraseña correcta => expandimos la carta
       setExpandedIndex(passwordPromptIndex);
-      // Y marcamos este índice como “desbloqueado”
       setUnlockedIndices((prev) => [...prev, passwordPromptIndex]);
 
       setPasswordPromptIndex(null);
@@ -109,7 +95,6 @@ function ReceivedLettersPage() {
     }
   };
 
-  // Modal para la contraseña
   const renderPasswordPrompt = () => {
     if (passwordPromptIndex === null) return null;
     return (
@@ -141,8 +126,6 @@ function ReceivedLettersPage() {
     );
   };
 
-  // -----------------------------------------------------
-  // Estilos
   const pageStyle = {
     minHeight: '100vh',
     background: 'linear-gradient(to right, #ffecef, #fff6f9)',
@@ -248,7 +231,7 @@ function ReceivedLettersPage() {
     e.target.style.backgroundColor = '#ff6b6b';
   };
 
-  // Modal overlay
+
   const overlayStyle = {
     position: 'fixed',
     top: 0,
@@ -296,10 +279,8 @@ function ReceivedLettersPage() {
     cursor: 'pointer',
   };
 
-  // Render principal
   return (
     <div style={pageStyle}>
-      {/* Modal contraseña si hace falta */}
       {renderPasswordPrompt()}
 
       <h1 style={titleStyle}>Cartas Recibidas</h1>
@@ -309,10 +290,8 @@ function ReceivedLettersPage() {
           <p>No has recibido ninguna carta.</p>
         ) : (
           letters.map((letter, index) => {
-            // Carta expandida?
             const isExpanded = expandedIndex === index;
 
-            // Fecha
             let unlockDateObj = null;
             let canReadNow = true;
             if (letter.unlockDate) {
@@ -323,10 +302,8 @@ function ReceivedLettersPage() {
               }
             }
 
-            // Si la carta se desbloqueó por contraseña
             const isUnlockedByPassword = unlockedIndices.includes(index);
 
-            // Si la fecha ya pasó O la carta se desbloqueó con password => se muestra
             const canShowContent = canReadNow || isUnlockedByPassword;
 
             return (
@@ -341,15 +318,12 @@ function ReceivedLettersPage() {
                   {letter.title || '(Sin título)'}
                 </div>
                 <p style={senderStyle}>De: {letter.senderEmail}</p>
-
-                {/* Si no está expandida y no se puede ver, mensaje */}
                 {!isExpanded && !canShowContent && letter.unlockDate && (
                   <p style={hintStyle}>
                     Podrás leer esta carta a partir de: {letter.unlockDate}
                   </p>
                 )}
 
-                {/* Si está expandida */}
                 {isExpanded && (
                   <>
                     {canShowContent ? (
@@ -366,7 +340,6 @@ function ReceivedLettersPage() {
                       </p>
                     )}
 
-                    {/* Botón eliminar */}
                     <button
                       style={deleteBtnStyle}
                       onClick={(e) => handleDelete(letter.id, e)}

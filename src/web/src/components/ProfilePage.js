@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './css/ProfilePage.css';
 
 function ProfilePage() {
@@ -6,7 +7,7 @@ function ProfilePage() {
   const [error, setError] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [newStatus, setNewStatus] = useState('');
-
+  const navigate = useNavigate();
   const [editForm, setEditForm] = useState({
     nombre: '',
     apellido: '',
@@ -246,6 +247,13 @@ function ProfilePage() {
           Actualizar Estado
         </button>
       </div>
+      <button
+          className="profile-back-btn"
+          onClick={() => navigate('/')}
+        >
+          Volver al Inicio
+        </button>
+
     </div>
   );
 }

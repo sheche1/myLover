@@ -1,6 +1,5 @@
 import React from 'react';
-import RelationshipCalendar from './RelationshipCalendar'; // Importamos el calendario
-
+import RelationshipCalendar from './RelationshipCalendar'; 
 function CalendarPage() {
     return (
         <div style={styles.container}>
@@ -24,7 +23,7 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         height: '100vh',
-        background: 'linear-gradient(to bottom, #ff9a9e, #fad0c4)', // Fondo degradado romántico
+        background: 'linear-gradient(to bottom, #ff9a9e, #fad0c4)', 
         fontFamily: "'Poppins', sans-serif",
         padding: '20px',
     },
@@ -37,8 +36,7 @@ const styles = {
         textAlign: 'center',
     },
     calendarBox: {
-        background: 'linear-gradient(to bottom right, #fff, #ffe6e6)', // Fondo degradado en la caja
-        padding: '30px',
+        background: 'linear-gradient(to bottom right, #fff, #ffe6e6)', 
         borderRadius: '15px',
         boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)',
         textAlign: 'center',

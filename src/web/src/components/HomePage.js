@@ -1,203 +1,159 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  FaCalendarAlt,
+  FaUserFriends,
+  FaEnvelopeOpenText,
+  FaInbox,
+  FaUser,
+  FaImages,
+  FaCamera,
+  FaBullseye,
+  FaMapMarkedAlt,
+  FaStar
+} from 'react-icons/fa';
 
 function HomePage({ onLogout }) {
   const navigate = useNavigate();
 
-  // Estilos de fondo
-  const backgroundStyle = {
+  const buttons = [
+    { icon: <FaCalendarAlt />, label: 'Calendario', route: '/calendar' },
+    { icon: <FaUserFriends />, label: 'Amigos', route: '/friends' },
+    { icon: <FaEnvelopeOpenText />, label: 'Enviar Carta', route: '/send-letter' },
+    { icon: <FaInbox />, label: 'Cartas Recibidas', route: '/received-letters' },
+    { icon: <FaUser />, label: 'Perfil', route: '/profile' },
+    { icon: <FaImages />, label: 'Galería', route: '/gallery' },
+    { icon: <FaCamera />, label: 'Subir Foto', route: '/upload-photo' },
+    { icon: <FaStar />, label: 'Eventos', route: '/important-events' },
+    { icon: <FaBullseye />, label: 'Metas', route: '/goals' },
+    { icon: <FaMapMarkedAlt />, label: 'Mapa', route: '/memory-map' }
+  ];
+
+  const bg = {
     position: 'relative',
     minHeight: '100vh',
-    background: 'url(/imagenes/background.jpg) no-repeat center center/cover',
-    fontFamily: "'Open Sans', sans-serif"
+    background: 'url(/imagenes/background.jpg) center/cover no-repeat',
+    fontFamily: "'Poppins', sans-serif"
   };
 
-  // Overlay con gradiente
-  const overlayStyle = {
+  const overlay = {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    background: 'linear-gradient(160deg, rgba(255, 200, 220, 0.3), rgba(255, 180, 210, 0.4))',
-    animation: 'pulseOverlay 6s ease-in-out infinite alternate',
-    pointerEvents: 'none',
+    inset: 0,
+    background:
+      'linear-gradient(120deg, rgba(255,200,220,.4), rgba(255,180,210,.6))',
+    backdropFilter: 'blur(2px)',
+    animation: 'bgShift 15s ease-in-out infinite alternate',
+    zIndex: 1
   };
 
-  const containerStyle = {
+  const container = {
     position: 'relative',
     zIndex: 2,
+    minHeight: '100vh',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  };
+
+  const card = {
+    width: '90%',
+    maxWidth: 640,
+    background: 'rgba(255,255,255,.85)',
+    borderRadius: 20,
+    padding: '3rem',
+    textAlign: 'center',
+    boxShadow: '0 12px 30px rgba(0,0,0,.15)',
+    backdropFilter: 'blur(8px)'
+  };
+
+  const title = {
+    fontFamily: "'Great Vibes', cursive",
+    color: '#ff6b6b',
+    fontSize: '3.2rem',
+    marginBottom: '.3rem'
+  };
+
+  const subtitle = {
+    color: '#555',
+    fontSize: '1.1rem',
+    marginBottom: '2.5rem'
+  };
+
+  const grid = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit,minmax(120px,1fr))',
+    gap: '1.2rem'
+  };
+
+  const btn = {
+    background: 'transparent',
+    border: '2px solid #ff6b6b',
+    borderRadius: 12,
+    color: '#ff6b6b',
+    padding: '1.1rem .4rem',
+    fontSize: '.9rem',
+    fontWeight: 600,
+    cursor: 'pointer',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
+    gap: '.5rem',
+    transition: 'all .25s ease'
   };
 
-  const contentBoxStyle = {
-    backgroundColor: 'rgba(255, 255, 255, 0.86)',
-    borderRadius: '16px',
-    padding: '2.5rem 3rem',
-    maxWidth: '600px',
-    width: '90%',
-    boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
-    textAlign: 'center',
-    backdropFilter: 'blur(6px)',
+  const enter = (e) => {
+    e.currentTarget.style.background = '#ff6b6b';
+    e.currentTarget.style.color = '#fff';
+    e.currentTarget.style.transform = 'translateY(-3px)';
+    e.currentTarget.style.boxShadow = '0 8px 18px rgba(0,0,0,.2)';
   };
 
-  const titleStyle = {
-    fontFamily: "'Great Vibes', cursive",
-    color: '#ff6b6b',
-    fontSize: '3rem',
-    fontWeight: 400,
-    marginBottom: '0.5rem',
-  };
-
-  const subtitleStyle = {
-    color: '#555',
-    fontSize: '1.1rem',
-    marginBottom: '2.2rem',
-  };
-
-  // Grid de botones
-  const buttonGridStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-    gap: '1rem',
-    justifyItems: 'center'
-  };
-
-  const buttonStyle = {
-    backgroundColor: '#ff6b6b',
-    border: 'none',
-    borderRadius: '8px',
-    color: 'white',
-    padding: '0.8rem 1.2rem',
-    fontSize: '1rem',
-    cursor: 'pointer',
-    boxShadow: '2px 3px 6px rgba(0,0,0,0.15)',
-    transition: 'all 0.3s ease',
-    fontWeight: 600,
-  };
-
-  const handleMouseEnter = (e) => {
-    e.target.style.backgroundColor = '#ff8f8f';
-    e.target.style.transform = 'translateY(-4px)';
-    e.target.style.boxShadow = '2px 6px 10px rgba(0,0,0,0.25)';
-  };
-
-  const handleMouseLeave = (e) => {
-    e.target.style.backgroundColor = '#ff6b6b';
-    e.target.style.transform = 'none';
-    e.target.style.boxShadow = '2px 3px 6px rgba(0,0,0,0.15)';
+  const leave = (e) => {
+    e.currentTarget.style.background = 'transparent';
+    e.currentTarget.style.color = '#ff6b6b';
+    e.currentTarget.style.transform = 'none';
+    e.currentTarget.style.boxShadow = 'none';
   };
 
   return (
-    <div style={backgroundStyle}>
-      <div style={overlayStyle}></div>
-
-      <div style={containerStyle}>
-        <div style={contentBoxStyle}>
-          <h1 style={titleStyle}>Bienvenidos a MyLover!</h1>
-          <p style={subtitleStyle}>
-            Este es un lugar especial para nosotros, para recordar y planificar
-            nuestro futuro juntos.
+    <div style={bg}>
+      <style>
+        {`
+        @keyframes bgShift{
+          0%{background-position:0% 50%}
+          100%{background-position:100% 50%}
+        }`}
+      </style>
+      <div style={overlay} />
+      <div style={container}>
+        <div style={card}>
+          <h1 style={title}>Bienvenidos a MyLover!</h1>
+          <p style={subtitle}>
+            Un lugar especial para recordar y planificar nuestro presente y futuro juntos.
           </p>
-
-          <div style={buttonGridStyle}>
-
-            {/* Botones existentes */}
-            <button
-              style={buttonStyle}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => navigate('/calendar')}
-            >
-              Ver Calendario
-            </button>
-            
-            <button
-              style={buttonStyle}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => navigate('/friends')}
-            >
-              Gestionar Amigos
-            </button>
-
-            <button
-              style={buttonStyle}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => navigate('/send-letter')}
-            >
-              Enviar Carta
-            </button>
-
-            <button
-              style={buttonStyle}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => navigate('/received-letters')}
-            >
-              Cartas Recibidas
-            </button>
-
-            <button
-              style={buttonStyle}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => navigate('/profile')}
-            >
-              Ver Perfil
-            </button>
-            <button
-              style={buttonStyle}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => navigate('/gallery')}
-            >
-              Ir a la Galería
-            </button>
-
-            <button
-              style={buttonStyle}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => navigate('/upload-photo')}
-            >
-              Subir Foto
-            </button>
+          <div style={grid}>
+            {buttons.map(({ icon, label, route }) => (
               <button
-                style={buttonStyle}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                onClick={() => navigate('/important-events')}
+                key={label}
+                style={btn}
+                onMouseEnter={enter}
+                onMouseLeave={leave}
+                onClick={() => navigate(route)}
               >
-                Eventos Importantes
+                <span style={{ fontSize: '1.6rem' }}>{icon}</span>
+                {label}
               </button>
-
-            <button 
-                style={buttonStyle}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                onClick={() => navigate('/goals')}
-              >
-              Metas de pareja
-            </button>
-
+            ))}
             <button
-              style={buttonStyle}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => navigate('/memory-map')}
-            >
-              Mapa de Recuerdos
-            </button>
-            <button
-              style={buttonStyle}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
+              style={{ ...btn, borderColor: '#999', color: '#999' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#999';
+                e.currentTarget.style.color = '#fff';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.color = '#999';
+              }}
               onClick={onLogout}
             >
               Cerrar Sesión

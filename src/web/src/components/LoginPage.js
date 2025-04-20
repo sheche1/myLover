@@ -22,7 +22,7 @@ function LoginPage({ onLogin }) {
 
             if (response.ok) {
                 const data = await response.json();
-                onLogin(data.token); // Pasa el token al componente padre
+                onLogin(data.token); 
             } else {
                 setErrorMessage('Credenciales incorrectas, por favor intente nuevamente.');
             }
@@ -60,7 +60,6 @@ function LoginPage({ onLogin }) {
                     <button type="submit" className="login-button">Iniciar Sesión</button>
                 </form>
                 {errorMessage && <p className="error-message">{errorMessage}</p>}
-                {/* Agrega el botón para navegar al registro */}
                 <p className="navigate-to-register">
                     ¿No tienes cuenta?{' '}
                     <Link to="/register" className="register-link">Crear una cuenta</Link>

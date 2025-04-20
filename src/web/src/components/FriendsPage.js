@@ -1,5 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import './css/FriendsPage.css';
+import { useNavigate } from 'react-router-dom';
+
+async function askAI(prompt) {
+  const apiKey = process.env.REACT_APP_OPENROUTER_API_KEY;
+  if (!apiKey) throw new Error('Falta REACT_APP_OPENROUTER_API_KEY');
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+      'X-Title': 'MyLover-FriendsPage'
+    },
+    body: JSON.stringify({
+      model: 'mistralai/mistral-7b-instruct:free',
+      messages: [
+        { role: 'system', content: 'Eres un consejero amistoso.' },
+        { role: 'user', content: prompt }
+      ]
+    })
+  });
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content?.trim() ?? '';
+}
 
 function FriendsPage() {
   const [friendRequests, setFriendRequests] = useState([]);
@@ -9,7 +32,9 @@ function FriendsPage() {
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [aiThinking, setAiThinking] = useState(false);
   const [questionSent, setQuestionSent] = useState(false);
+  const navigate = useNavigate();
 
   const myEmail = localStorage.getItem('email') || '';
   const myPassword = localStorage.getItem('password') || '';
@@ -34,15 +59,19 @@ function FriendsPage() {
     '¿Cómo te gustaría que te recordaran?',
     '¿Qué harías si no tuvieras miedo?',
     '¿Qué significa el amor para ti?',
-    '¿Qué te gustaría hacer conmigo que nunca hemos hecho?',
+    '¿Qué te gustaría hacer conmigo que nunca hemos hecho?'
   ];
 
   const getStatusEmoji = (status) => {
     switch (status) {
-      case 'Bien': return '😊';
-      case 'Regular': return '😐';
-      case 'Mal': return '😢';
-      default: return '❓';
+      case 'Bien':
+        return '😊';
+      case 'Regular':
+        return '😐';
+      case 'Mal':
+        return '😢';
+      default:
+        return '❓';
     }
   };
 
@@ -53,31 +82,25 @@ function FriendsPage() {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Basic ' + btoa(`${myEmail}:${myPassword}`),
-          },
+            Authorization: 'Basic ' + btoa(`${myEmail}:${myPassword}`)
+          }
         });
-
-        if (!response.ok) throw new Error('Error al obtener datos de amigos');
-
+        if (!response.ok) throw new Error();
         const data = await response.json();
-
-        const uniqueRequests = (data.friendRequests || []).reduce((acc, req) => {
-          if (!acc.find((item) => item.email === req.email)) acc.push(req);
-          return acc;
+        const uniqueRequests = (data.friendRequests || []).reduce((a, r) => {
+          if (!a.find((i) => i.email === r.email)) a.push(r);
+          return a;
         }, []);
-        const uniqueFriends = (data.friends || []).reduce((acc, f) => {
-          if (!acc.find((item) => item.email === f.email)) acc.push(f);
-          return acc;
+        const uniqueFriends = (data.friends || []).reduce((a, f) => {
+          if (!a.find((i) => i.email === f.email)) a.push(f);
+          return a;
         }, []);
-
         setFriendRequests(uniqueRequests);
         setFriends(uniqueFriends);
-      } catch (err) {
-        console.error('Error al cargar datos:', err);
+      } catch {
         setError('Error al cargar los datos de amigos.');
       }
     };
-
     fetchFriendsData();
   }, [myEmail, myPassword]);
 
@@ -89,76 +112,84 @@ function FriendsPage() {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Basic ' + btoa(`${myEmail}:${myPassword}`),
-          },
+            Authorization: 'Basic ' + btoa(`${myEmail}:${myPassword}`)
+          }
         }
       );
-      if (!resp.ok) throw new Error('Error al cargar conversación');
+      if (!resp.ok) throw new Error();
       const msgs = await resp.json();
       setChatMessages(msgs);
-    } catch (error) {
-      console.error('Error al cargar conversación:', error);
+    } catch {
       alert('No se pudo cargar la conversación');
     }
   };
 
   const sendOfflineMessage = async () => {
     if (!newMessage.trim() || !selectedFriend) return;
-
     const body = {
       senderEmail: myEmail,
       receiverEmail: selectedFriend.email,
-      content: newMessage.trim(),
+      content: newMessage.trim()
     };
-
     try {
       const resp = await fetch('http://localhost:8080/api/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Basic ' + btoa(`${myEmail}:${myPassword}`),
+          Authorization: 'Basic ' + btoa(`${myEmail}:${myPassword}`)
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify(body)
       });
-      if (!resp.ok) throw new Error('Error del servidor');
-
+      if (!resp.ok) throw new Error();
       setNewMessage('');
       loadConversation(selectedFriend.email);
-    } catch (error) {
-      console.error('Error al enviar mensaje:', error);
+    } catch {
       alert('No se pudo enviar el mensaje');
     }
   };
 
   const sendRandomQuestion = async () => {
     if (!selectedFriend) return;
-
-    const question = predefinedQuestions[Math.floor(Math.random() * predefinedQuestions.length)];
-
+    const question =
+      predefinedQuestions[Math.floor(Math.random() * predefinedQuestions.length)];
     const body = {
       senderEmail: myEmail,
       receiverEmail: selectedFriend.email,
-      content: question,
+      content: question
     };
-
     try {
       const resp = await fetch('http://localhost:8080/api/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Basic ' + btoa(`${myEmail}:${myPassword}`),
+          Authorization: 'Basic ' + btoa(`${myEmail}:${myPassword}`)
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify(body)
       });
-
-      if (!resp.ok) throw new Error('Error del servidor');
-
+      if (!resp.ok) throw new Error();
       setQuestionSent(true);
       setTimeout(() => setQuestionSent(false), 3000);
       loadConversation(selectedFriend.email);
-    } catch (error) {
-      console.error('Error al enviar pregunta:', error);
+    } catch {
       alert('No se pudo enviar la pregunta');
+    }
+  };
+
+  const handleAskAI = async () => {
+    if (!selectedFriend) return;
+    setAiThinking(true);
+    try {
+      const aiReply = await askAI(
+        `Dame una idea de pregunta profunda o tema de conversación para hablar con mi amigo ${selectedFriend.nombre || selectedFriend.email}.`
+      );
+      setChatMessages((p) => [
+        ...p,
+        { senderEmail: 'AI', receiverEmail: myEmail, content: aiReply }
+      ]);
+    } catch {
+      alert('La IA no pudo responder.');
+    } finally {
+      setAiThinking(false);
     }
   };
 
@@ -170,25 +201,24 @@ function FriendsPage() {
 
   const handleFriendRequest = async () => {
     try {
-      const cleanEmailToSearch = emailToSearch.trim();
+      const clean = emailToSearch.trim();
       const response = await fetch(
-        `http://localhost:8080/api/friends/send?senderEmail=${myEmail}&receiverEmail=${encodeURIComponent(cleanEmailToSearch)}`,
+        `http://localhost:8080/api/friends/send?senderEmail=${myEmail}&receiverEmail=${encodeURIComponent(
+          clean
+        )}`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Basic ' + btoa(`${myEmail}:${myPassword}`),
-          },
+            Authorization: 'Basic ' + btoa(`${myEmail}:${myPassword}`)
+          }
         }
       );
-
-      if (!response.ok) throw new Error(`Error: ${response.status}`);
-
+      if (!response.ok) throw new Error();
       alert('Solicitud enviada correctamente');
       setEmailToSearch('');
-    } catch (error) {
-      console.error('Error al enviar solicitud:', error);
-      alert('Error al enviar solicitud: ' + error.message);
+    } catch {
+      alert('Error al enviar solicitud');
     }
   };
 
@@ -200,28 +230,20 @@ function FriendsPage() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Basic ' + btoa(`${myEmail}:${myPassword}`),
-          },
+            Authorization: 'Basic ' + btoa(`${myEmail}:${myPassword}`)
+          }
         }
       );
-
-      if (!response.ok) throw new Error(`Error: ${response.status}`);
-
-      setFriendRequests((prev) =>
-        prev.filter((request) => request.email !== senderEmail)
-      );
-
+      if (!response.ok) throw new Error();
+      setFriendRequests((p) => p.filter((r) => r.email !== senderEmail));
       alert('Solicitud aceptada');
-
-      setFriends((prevFriends) => {
-        if (!prevFriends.find((f) => f.email === senderEmail)) {
-          return [...prevFriends, { email: senderEmail, status: 'Desconocido' }];
-        }
-        return prevFriends;
+      setFriends((p) => {
+        if (!p.find((f) => f.email === senderEmail))
+          return [...p, { email: senderEmail, status: 'Desconocido' }];
+        return p;
       });
-    } catch (error) {
-      console.error('Error al aceptar solicitud:', error);
-      alert('Error al aceptar solicitud: ' + error.message);
+    } catch {
+      alert('Error al aceptar solicitud');
     }
   };
 
@@ -233,25 +255,18 @@ function FriendsPage() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Basic ' + btoa(`${myEmail}:${myPassword}`),
-          },
+            Authorization: 'Basic ' + btoa(`${myEmail}:${myPassword}`)
+          }
         }
       );
-
-      setFriendRequests((prev) =>
-        prev.filter((request) => request.email !== senderEmail)
-      );
-
+      setFriendRequests((p) => p.filter((r) => r.email !== senderEmail));
       alert('Solicitud rechazada');
-    } catch (error) {
-      console.error(error);
+    } catch {
       alert('Error al rechazar solicitud');
     }
   };
 
-  if (error) {
-    return <div className="friends-error">{error}</div>;
-  }
+  if (error) return <div className="friends-error">{error}</div>;
 
   return (
     <div className="friends-container">
@@ -269,14 +284,16 @@ function FriendsPage() {
 
       <div className="friends-section">
         <h2>Solicitudes de amistad</h2>
-        {friendRequests.length > 0 ? (
+        {friendRequests.length ? (
           <div className="friend-requests">
-            {friendRequests.map((request, index) => (
-              <div key={index} className="request-card">
-                <span>{request.nombre || 'Usuario'} ({request.email})</span>
+            {friendRequests.map((req, i) => (
+              <div key={i} className="request-card">
+                <span>
+                  {req.nombre || 'Usuario'} ({req.email})
+                </span>
                 <div className="request-actions">
-                  <button onClick={() => handleAcceptRequest(request.email)}>Aceptar</button>
-                  <button onClick={() => handleRejectRequest(request.email)}>Rechazar</button>
+                  <button onClick={() => handleAcceptRequest(req.email)}>Aceptar</button>
+                  <button onClick={() => handleRejectRequest(req.email)}>Rechazar</button>
                 </div>
               </div>
             ))}
@@ -288,17 +305,17 @@ function FriendsPage() {
 
       <div className="friends-section">
         <h2>Lista de amigos</h2>
-        {friends.length > 0 ? (
-          friends.map((friend, index) => (
-            <div
-              key={index}
-              className="friend-item"
-              onClick={() => handleSelectFriend(friend)}
-            >
+        {friends.length ? (
+          friends.map((friend, i) => (
+            <div key={i} className="friend-item" onClick={() => handleSelectFriend(friend)}>
               <div className="friend-emoji">{getStatusEmoji(friend.status)}</div>
               <div className="friend-info">
-                <p className="friend-name">{friend.nombre || 'Amigo'} ({friend.email})</p>
-                <p className="friend-status"><strong>Estado:</strong> {friend.status || 'Desconocido'}</p>
+                <p className="friend-name">
+                  {friend.nombre || 'Amigo'} ({friend.email})
+                </p>
+                <p className="friend-status">
+                  <strong>Estado:</strong> {friend.status || 'Desconocido'}
+                </p>
               </div>
             </div>
           ))
@@ -309,7 +326,9 @@ function FriendsPage() {
 
       {selectedFriend && (
         <div className="chat-container">
-          <h2>Chat con {selectedFriend.nombre || 'Amigo'} ({selectedFriend.email})</h2>
+          <h2>
+            Chat con {selectedFriend.nombre || 'Amigo'} ({selectedFriend.email})
+          </h2>
 
           {questionSent && (
             <div className="chat-question" style={{ marginBottom: '1rem', textAlign: 'center', fontStyle: 'italic' }}>
@@ -320,17 +339,16 @@ function FriendsPage() {
           <div className="chat-messages">
             {chatMessages.map((msg, i) => {
               const isMe = msg.senderEmail === myEmail;
+              const isAI = msg.senderEmail === 'AI';
               const isQuestion = predefinedQuestions.includes(msg.content.trim());
               let styleClass = '';
-
               if (isMe && isQuestion) styleClass = 'chat-question-own';
               else if (isMe && !isQuestion) styleClass = 'chat-message-own';
               else if (!isMe && isQuestion) styleClass = 'chat-question-other';
               else styleClass = 'chat-message-other';
-
               return (
                 <div key={i} className={`chat-message ${styleClass}`}>
-                  <span className="chat-sender">{isMe ? 'Yo' : msg.senderEmail}:</span>
+                  <span className="chat-sender">{isMe ? 'Yo' : isAI ? '🤖 IA' : msg.senderEmail}:</span>
                   <span className="chat-content">{isQuestion ? '🧠 ' : ''}{msg.content}</span>
                 </div>
               );
@@ -346,9 +364,20 @@ function FriendsPage() {
             />
             <button onClick={sendOfflineMessage}>Enviar</button>
             <button onClick={sendRandomQuestion}>💌 Pregúntale algo especial</button>
+            <button onClick={handleAskAI} disabled={aiThinking}>
+              {aiThinking ? 'Pensando…' : '🧠 Sugerencia IA'}
+            </button>
           </div>
         </div>
       )}
+          <button
+              className="friends-back-btn"
+              onClick={() => navigate('/')}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#ff8787'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = '#ff6b6b'}
+            >
+            Volver al Inicio
+          </button>
     </div>
   );
 }

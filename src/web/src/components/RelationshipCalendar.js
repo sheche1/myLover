@@ -58,7 +58,7 @@ function RelationshipCalendar() {
             <div style={styles.hearts}>💖 💕 💗 💓 💞</div>
             <p style={styles.date}>{formatDate(new Date())}</p>
             <p style={styles.message}>
-                Ya hemos conocido <span style={styles.highlight}>{knownDays}</span> días 💘
+                Ya llevamos juntos <span style={styles.highlight}>{knownDays}</span> días 💘
             </p>
             <div style={styles.heartsBottom}>💖 💕 💗 💓 💞</div>
             <button 

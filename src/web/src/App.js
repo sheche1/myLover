@@ -15,6 +15,7 @@ import UploadPhoto from './components/UploadPhoto';
 import GoalsPage from './components/GoalsPage';
 import MemoryMapPage from './components/MemoryMapPage';
 
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 

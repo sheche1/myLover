@@ -5,11 +5,10 @@ function SendLetterPage() {
   const [toEmail, setToEmail] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [unlockDate, setUnlockDate] = useState(''); 
+  const [unlockDate, setUnlockDate] = useState('');
   const [secretPassword, setSecretPassword] = useState('');
 
   const navigate = useNavigate();
-
   const myEmail = localStorage.getItem('email') || '';
   const myPassword = localStorage.getItem('password') || '';
 
@@ -18,6 +17,7 @@ function SendLetterPage() {
       alert('Requiere un destinatario y contenido');
       return;
     }
+
     const letterObj = {
       senderEmail: myEmail,
       receiverEmail: toEmail.trim(),
@@ -36,11 +36,10 @@ function SendLetterPage() {
         },
         body: JSON.stringify(letterObj)
       });
-      if (!resp.ok) {
-        throw new Error('Error al enviar la carta');
-      }
+
+      if (!resp.ok) throw new Error('Error al enviar la carta');
+
       alert('Carta enviada con éxito');
-      // Limpiar el formulario
       setToEmail('');
       setTitle('');
       setContent('');
@@ -52,52 +51,51 @@ function SendLetterPage() {
     }
   };
 
-  // ---------- Estilos en línea ----------
-
-  // Fondo en gradiente
   const pageStyle = {
     minHeight: '100vh',
-    background: 'linear-gradient(to right, #ffecef, #fff)',
+    background: 'linear-gradient(to right, #ffdde1, #ee9ca7)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    fontFamily: "'Open Sans', sans-serif"
+    fontFamily: "'Poppins', sans-serif",
+    animation: 'fadeIn 1s ease-in'
   };
 
-  // Tarjeta central
   const containerStyle = {
-    backgroundColor: '#fff',
-    borderRadius: '10px',
+    backgroundColor: '#ffffffdd',
+    borderRadius: '15px',
     width: '90%',
     maxWidth: '600px',
-    padding: '2rem',
-    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-    margin: '2rem'
+    padding: '2rem 2.5rem',
+    boxShadow: '0 12px 25px rgba(0, 0, 0, 0.15)',
+    animation: 'popIn 0.6s ease-in-out'
   };
 
   const titleStyle = {
     textAlign: 'center',
-    color: '#ff6b6b',
-    fontWeight: 'bold',
+    color: '#ff5e78',
+    fontWeight: 700,
     marginBottom: '1.5rem',
-    fontSize: '1.8rem'
+    fontSize: '2rem',
+    letterSpacing: '0.5px'
   };
 
-  // Label y input
   const labelStyle = {
-    display: 'block',
-    margin: '0.5rem 0 0.3rem',
     fontWeight: 600,
-    color: '#444'
+    color: '#444',
+    marginBottom: '0.4rem',
+    display: 'block'
   };
 
   const inputStyle = {
     width: '100%',
-    marginBottom: '1rem',
-    padding: '0.6rem',
-    borderRadius: '5px',
+    padding: '0.7rem',
+    borderRadius: '8px',
     border: '1px solid #ccc',
-    fontSize: '1rem'
+    fontSize: '1rem',
+    marginBottom: '1rem',
+    transition: 'border 0.3s ease',
+    outline: 'none'
   };
 
   const textareaStyle = {
@@ -106,29 +104,26 @@ function SendLetterPage() {
     resize: 'vertical'
   };
 
-  // Para agrupar la fecha y la contraseña en la misma línea
+  const inputFocusStyle = {
+    borderColor: '#ff91a4',
+    boxShadow: '0 0 0 3px #ffd4dd66'
+  };
+
   const rowStyle = {
     display: 'flex',
     gap: '1rem',
-    alignItems: 'center',
-    flexWrap: 'wrap' // Para que no se desborde en pantallas pequeñas
-  };
-
-  const miniLabelStyle = {
-    fontWeight: 600,
-    color: '#444',
-    margin: '0.5rem 0 0.3rem'
+    flexWrap: 'wrap'
   };
 
   const smallInputStyle = {
     flex: '1',
-    padding: '0.5rem',
-    borderRadius: '5px',
+    padding: '0.6rem',
+    borderRadius: '8px',
     border: '1px solid #ccc',
-    fontSize: '0.95rem'
+    fontSize: '1rem',
+    transition: 'border 0.3s ease'
   };
 
-  // Botones
   const buttonRowStyle = {
     display: 'flex',
     justifyContent: 'center',
@@ -137,25 +132,44 @@ function SendLetterPage() {
   };
 
   const buttonStyle = {
-    backgroundColor: '#ff6b6b',
+    backgroundColor: '#ff6b81',
     color: 'white',
     border: 'none',
-    borderRadius: '5px',
-    padding: '0.6rem 1.2rem',
+    borderRadius: '8px',
+    padding: '0.7rem 1.5rem',
     cursor: 'pointer',
     fontSize: '1rem',
-    transition: 'background-color 0.3s ease'
+    fontWeight: 600,
+    transition: 'all 0.3s ease'
   };
 
   const handleMouseEnter = (e) => {
-    e.target.style.backgroundColor = '#ff8787';
+    e.target.style.backgroundColor = '#ff8b9e';
+    e.target.style.transform = 'scale(1.05)';
   };
+
   const handleMouseLeave = (e) => {
-    e.target.style.backgroundColor = '#ff6b6b';
+    e.target.style.backgroundColor = '#ff6b81';
+    e.target.style.transform = 'scale(1)';
   };
 
   return (
     <div style={pageStyle}>
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes popIn {
+          from { transform: scale(0.95); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+        input:focus, textarea:focus {
+          border-color: #ff91a4 !important;
+          box-shadow: 0 0 0 3px #ffd4dd66 !important;
+        }
+      `}</style>
+
       <div style={containerStyle}>
         <h1 style={titleStyle}>Enviar carta privada</h1>
 
@@ -186,10 +200,8 @@ function SendLetterPage() {
         />
 
         <div style={rowStyle}>
-          <div style={{ flex: '1 1 auto' }}>
-            <label style={miniLabelStyle}>
-              Fecha de desbloqueo (opcional)
-            </label>
+          <div style={{ flex: 1 }}>
+            <label style={labelStyle}>Fecha de desbloqueo (opcional):</label>
             <input
               type="date"
               value={unlockDate}
@@ -197,10 +209,9 @@ function SendLetterPage() {
               style={smallInputStyle}
             />
           </div>
-
-          <div style={{ flex: '1 1 auto' }}>
-            <label style={miniLabelStyle}>
-              Contraseña (para abrir antes de la fecha)
+          <div style={{ flex: 1 }}>
+            <label style={labelStyle}>
+              Contraseña (para abrir antes de la fecha):
             </label>
             <input
               type="password"

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './css/GoalsPage.css';
+import { useNavigate } from 'react-router-dom';
 
 function GoalsPage() {
     const [goals, setGoals] = useState([]);
     const [form, setForm] = useState({ title: '', description: '', deadline: '', completed: false });
     const [editId, setEditId] = useState(null);
-  
+    const navigate = useNavigate();
     const email = localStorage.getItem("email");
     const password = localStorage.getItem("password");
     const authHeader = { Authorization: `Basic ${btoa(`${email}:${password}`)}` };
@@ -145,6 +146,14 @@ function GoalsPage() {
             </li>
           ))}
         </ul>
+        <button
+          className="friends-back-btn"
+          onClick={() => navigate('/')}
+          onMouseEnter={(e) => e.target.style.backgroundColor = '#ff8787'}
+          onMouseLeave={(e) => e.target.style.backgroundColor = '#ff6b6b'}
+        >
+          Volver al Inicio
+      </button>
       </div>
     );
   }

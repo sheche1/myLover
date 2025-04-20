@@ -129,7 +129,6 @@ function EventList() {
   );
 }
 
-// 💅 ESTILOS TIPO DASHBOARD
 const styles = {
   page: {
     backgroundColor: '#f4f6fa',

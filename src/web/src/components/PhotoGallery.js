@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 function PhotoGallery() {
   const [photos, setPhotos] = useState([]);
   const [filterCategory, setFilterCategory] = useState('');
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     fetchPhotos();
@@ -99,6 +103,17 @@ function PhotoGallery() {
           </div>
         ))}
       </div>
+
+      <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+        <button
+          style={styles.backButton}
+          onClick={() => navigate('/')}
+          onMouseEnter={(e) => e.target.style.backgroundColor = '#ff8787'}
+          onMouseLeave={(e) => e.target.style.backgroundColor = '#ff6b6b'}
+        >
+          Volver al Inicio
+        </button>
+      </div>
     </div>
   );
 }
@@ -179,7 +194,19 @@ const styles = {
     borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '0.9rem'
+  },
+  backButton: {
+    padding: '0.7rem 1.5rem',
+    backgroundColor: '#ff6b6b',
+    color: '#fff',
+    fontSize: '1rem',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontWeight: 600,
+    transition: 'all 0.3s ease'
   }
+  
 };
 
 export default PhotoGallery;
