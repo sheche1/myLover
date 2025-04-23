@@ -41,8 +41,6 @@ public class AuthController {
             User registeredUser = userService.registerUser(user);
             return ResponseEntity.ok(registeredUser);
         } catch(Exception e) {
-            // Para que el front-end no reciba un texto plano, 
-            // devolvemos un objeto Map y Spring lo convierte a JSON.
             Map<String, String> errorBody = new HashMap<>();
             errorBody.put("message", e.getMessage());
             return ResponseEntity.badRequest().body(errorBody);

@@ -6,9 +6,6 @@ import org.springframework.stereotype.Service;
 import com.myLover.lover.model.User;
 import com.myLover.lover.repository.UserRepository;
 
-/**
- * Para que Spring Security valide las credenciales con nuestra tabla "user".
- */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -21,11 +18,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("Usuario no encontrado");
         }
-        // Retornamos un UserDetails que contenga el email como username y la password encriptada
         return org.springframework.security.core.userdetails.User
             .withUsername(user.getEmail())
-            .password(user.getPassword())  // la contraseña hasheada de la BD
-            .roles("USER")                // o authorities si prefieres
+            .password(user.getPassword())  
+            .roles("USER")             
             .build();
     }
 }
