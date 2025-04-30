@@ -38,6 +38,7 @@ function ProfilePage() {
       const data = await response.json();
       setUserData(data);
       setNewStatus(data.status || 'No establecido');
+      localStorage.setItem("nombre", data.nombre || data.email);
       console.log("Datos recibidos del perfil:", data);
     } catch (err) {
       console.error('Error al cargar los datos:', err);

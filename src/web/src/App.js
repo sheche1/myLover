@@ -14,6 +14,7 @@ import PhotoGallery from './components/PhotoGallery';
 import UploadPhoto from './components/UploadPhoto';
 import GoalsPage from './components/GoalsPage';
 import MemoryMapPage from './components/MemoryMapPage';
+import TaskCollaborationPage from './components/TaskCollaborationPage';
 
 
 function App() {
@@ -97,6 +98,11 @@ function App() {
         <Route
           path="/memory-map"
           element={isAuthenticated ? <MemoryMapPage /> : <Navigate to="/login" />}
+        />
+        
+        <Route
+          path="/task-collaboration"
+          element={isAuthenticated ? <TaskCollaborationPage /> : <Navigate to="/login" />}
         />
 
         {/* 404 */}

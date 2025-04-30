@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   FaCalendarAlt,
@@ -10,11 +10,32 @@ import {
   FaCamera,
   FaBullseye,
   FaMapMarkedAlt,
-  FaStar
+  FaStar,
+  FaHandshake
 } from 'react-icons/fa';
 
 function HomePage({ onLogout }) {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const email = localStorage.getItem("email");
+    const password = localStorage.getItem("password");
+  
+    if (!email || !password) return;
+  
+    fetch("http://localhost:8080/api/profile", {
+      headers: {
+        "Authorization": "Basic " + btoa(`${email}:${password}`)
+      }
+    })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (data?.nombre) {
+          localStorage.setItem("nombre", data.nombre);
+        }
+      });
+  }, []);
+  
 
   const buttons = [
     { icon: <FaCalendarAlt />, label: 'Calendario', route: '/calendar' },
@@ -26,8 +47,10 @@ function HomePage({ onLogout }) {
     { icon: <FaCamera />, label: 'Subir Foto', route: '/upload-photo' },
     { icon: <FaStar />, label: 'Eventos', route: '/important-events' },
     { icon: <FaBullseye />, label: 'Metas', route: '/goals' },
-    { icon: <FaMapMarkedAlt />, label: 'Mapa', route: '/memory-map' }
+    { icon: <FaMapMarkedAlt />, label: 'Mapa', route: '/memory-map' },
+    { icon: <FaHandshake />, label: 'Colaboraciones', route: '/task-collaboration' }
   ];
+  
 
   const bg = {
     position: 'relative',
@@ -114,6 +137,8 @@ function HomePage({ onLogout }) {
     e.currentTarget.style.transform = 'none';
     e.currentTarget.style.boxShadow = 'none';
   };
+
+  
 
   return (
     <div style={bg}>
