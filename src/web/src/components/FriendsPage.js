@@ -3,26 +3,30 @@ import './css/FriendsPage.css';
 import { useNavigate } from 'react-router-dom';
 
 async function askAI(prompt) {
-  const apiKey = process.env.REACT_APP_OPENROUTER_API_KEY;
-  if (!apiKey) throw new Error('Falta REACT_APP_OPENROUTER_API_KEY');
-  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-      'X-Title': 'MyLover-FriendsPage'
-    },
-    body: JSON.stringify({
-      model: 'mistralai/mistral-7b-instruct:free',
-      messages: [
-        { role: 'system', content: 'Eres un consejero amistoso.' },
-        { role: 'user', content: prompt }
-      ]
-    })
-  });
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content?.trim() ?? '';
+  try {
+    const res = await fetch("http://localhost:8080/api/ia/suggest", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ prompt })
+    });
+
+    const data = await res.json();
+
+    if (typeof data === "string") {
+      return data;
+    }
+
+    const content = data.choices?.[0]?.message?.content?.trim();
+    return content || "No se pudo obtener respuesta.";
+  } catch (err) {
+    console.error("Error al contactar con backend:", err);
+    return "No se pudo obtener respuesta.";
+  }
 }
+
+
 
 function FriendsPage() {
   const [friendRequests, setFriendRequests] = useState([]);
@@ -304,7 +308,7 @@ function FriendsPage() {
       </div>
 
       <div className="friends-section">
-        <h2>Lista de amigos</h2>
+        <h2>Mi persona especial</h2>
         {friends.length ? (
           friends.map((friend, i) => (
             <div key={i} className="friend-item" onClick={() => handleSelectFriend(friend)}>

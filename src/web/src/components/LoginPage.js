@@ -23,6 +23,7 @@ function LoginPage({ onLogin }) {
             if (response.ok) {
                 const data = await response.json();
                 onLogin(data.token); 
+                sessionStorage.setItem("credentials", btoa(`${email}:${password}`));
             } else {
                 setErrorMessage('Credenciales incorrectas, por favor intente nuevamente.');
             }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   FaCalendarAlt,
@@ -16,6 +16,10 @@ import {
 
 function HomePage({ onLogout }) {
   const navigate = useNavigate();
+  const [estadoPareja, setEstadoPareja] = useState(null);
+  const [nombrePareja, setNombrePareja] = useState('');
+  
+
 
   useEffect(() => {
     const email = localStorage.getItem("email");
@@ -23,9 +27,11 @@ function HomePage({ onLogout }) {
   
     if (!email || !password) return;
   
+    const credentials = btoa(`${email}:${password}`);
+  
     fetch("http://localhost:8080/api/profile", {
       headers: {
-        "Authorization": "Basic " + btoa(`${email}:${password}`)
+        "Authorization": "Basic " + credentials
       }
     })
       .then(res => res.ok ? res.json() : null)
@@ -33,12 +39,27 @@ function HomePage({ onLogout }) {
         if (data?.nombre) {
           localStorage.setItem("nombre", data.nombre);
         }
+  
+        fetch("http://localhost:8080/api/profile/partner-status", {
+          headers: {
+            "Authorization": "Basic " + credentials
+          }
+        })
+          .then(res => res.ok ? res.json() : null)
+          .then(partner => {
+            if (partner?.status === "Regular" || partner?.status === "Mal") {
+              setEstadoPareja(partner.status);
+              setNombrePareja(partner.nombre || partner.email);
+            }
+          });
       });
   }, []);
   
+  
+  
 
   const buttons = [
-    { icon: <FaCalendarAlt />, label: 'Calendario', route: '/calendar' },
+    { icon: <FaCalendarAlt />, label: 'Nuestro Amor', route: '/calendar' },
     { icon: <FaUserFriends />, label: 'Amigos', route: '/friends' },
     { icon: <FaEnvelopeOpenText />, label: 'Enviar Carta', route: '/send-letter' },
     { icon: <FaInbox />, label: 'Cartas Recibidas', route: '/received-letters' },
@@ -151,6 +172,7 @@ function HomePage({ onLogout }) {
       </style>
       <div style={overlay} />
       <div style={container}>
+        
         <div style={card}>
           <h1 style={title}>Bienvenidos a MyLover!</h1>
           <p style={subtitle}>
@@ -184,6 +206,21 @@ function HomePage({ onLogout }) {
               Cerrar Sesión
             </button>
           </div>
+
+          {estadoPareja && (
+            <div style={{
+              backgroundColor: estadoPareja === "Mal" ? "#ffe0e0" : "#fff3cd",
+              color: "#a94442",
+              padding: "1rem",
+              borderRadius: "10px",
+              marginBottom: "1.5rem",
+              textAlign: "center",
+              fontWeight: "bold",
+              boxShadow: "0 0 8px rgba(0,0,0,0.1)"
+            }}>
+              ⚠️ {nombrePareja} se siente {estadoPareja.toLowerCase()}. Dale cariño hoy. ❤️
+            </div>
+          )}
         </div>
       </div>
     </div>

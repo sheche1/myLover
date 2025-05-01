@@ -1,14 +1,12 @@
 package com.myLover.lover.controller;
 
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 
-import com.google.gson.Gson;
 import com.myLover.lover.model.User;
 import com.myLover.lover.service.UserService;
 import com.myLover.lover.repository.UserRepository;
@@ -82,4 +80,23 @@ public class ProfileController {
         String status = userService.getUserStatus(email);
         return ResponseEntity.ok(status);
     }
+
+    @GetMapping("/profile/partner-status")
+    public ResponseEntity<?> getPartnerStatus(Authentication auth) {
+        String myEmail = auth.getName();
+        User me = userService.findUserByEmail(myEmail);
+        if (me == null || me.getFriends().isEmpty()) {
+            return ResponseEntity.ok().body(Map.of("status", "none"));
+        }
+    
+        User pareja = me.getFriends().get(0);
+        String estado = pareja.getStatus();
+        return ResponseEntity.ok().body(Map.of(
+            "status", estado,
+            "nombre", pareja.getNombre(),
+            "email", pareja.getEmail()
+        ));
+    }
+    
+
 }

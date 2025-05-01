@@ -49,7 +49,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) 
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
+                .requestMatchers("/api/auth/register", "/api/auth/login","/api/ia/suggest","/api/profile/partner-status").permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic(httpBasic -> httpBasic.realmName("MyLover App"));

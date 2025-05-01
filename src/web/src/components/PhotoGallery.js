@@ -1,38 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-
 function PhotoGallery() {
   const [photos, setPhotos] = useState([]);
   const [filterCategory, setFilterCategory] = useState('');
   const navigate = useNavigate();
 
-
   useEffect(() => {
     fetchPhotos();
   }, [filterCategory]);
 
+  const getAuthHeader = () => {
+    const email = localStorage.getItem("email");
+    const password = localStorage.getItem("password");
+
+    if (!email || !password) {
+      alert("Sesión expirada. Inicia sesión nuevamente.");
+      navigate("/login");
+      return;
+    }
+    const credentials = btoa(`${email}:${password}`);
+    if (!credentials) return null;
+    return { Authorization: `Basic ${credentials}` };
+  };
+
   const fetchPhotos = async () => {
+    const headers = getAuthHeader();
+    if (!headers) {
+      alert("Sesión expirada. Por favor, inicia sesión nuevamente.");
+      navigate("/login");
+      return;
+    }
+
     try {
       let url = 'http://localhost:8080/api/photos';
       if (filterCategory.trim() !== '') {
         url = `http://localhost:8080/api/photos/category/${filterCategory}`;
       }
 
-      const email = localStorage.getItem("email");
-      const password = localStorage.getItem("password");
-      if (!email || !password) {
-        alert('No estás autenticado. Inicia sesión primero.');
-        return;
-      }
-
-      const credentials = btoa(`${email}:${password}`);
-
       const response = await fetch(url, {
         method: 'GET',
-        headers: {
-          'Authorization': `Basic ${credentials}`
-        }
+        headers
       });
 
       if (response.ok) {
@@ -50,16 +58,17 @@ function PhotoGallery() {
     const confirm = window.confirm('¿Estás seguro de que quieres eliminar esta foto?');
     if (!confirm) return;
 
-    try {
-      const email = localStorage.getItem("email");
-      const password = localStorage.getItem("password");
-      const credentials = btoa(`${email}:${password}`);
+    const headers = getAuthHeader();
+    if (!headers) {
+      alert("Sesión expirada. Por favor, inicia sesión nuevamente.");
+      navigate("/login");
+      return;
+    }
 
+    try {
       const response = await fetch(`http://localhost:8080/api/photos/${photoId}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Basic ${credentials}`
-        }
+        headers
       });
 
       if (response.ok) {
@@ -206,7 +215,6 @@ const styles = {
     fontWeight: 600,
     transition: 'all 0.3s ease'
   }
-  
 };
 
 export default PhotoGallery;

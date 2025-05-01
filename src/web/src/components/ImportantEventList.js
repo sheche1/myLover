@@ -16,6 +16,8 @@ function ImportantEventList() {
   const [groupEditId, setGroupEditId] = useState(null);
   const [expandedGroups, setExpandedGroups] = useState([]);
   const [expandedEventId, setExpandedEventId] = useState(null);
+  const [searchDate, setSearchDate] = useState('');
+
 
 
   useEffect(() => {
@@ -240,7 +242,6 @@ function ImportantEventList() {
             {groupEditId ? 'Actualizar colección' : 'Crear colección'}
           </button>
         </form>
-
         <h3 className="event-title">📂 Colecciones creadas</h3>
         {groups.map((g) => {
           const expanded = expandedGroups.includes(g.id);
@@ -310,22 +311,67 @@ function ImportantEventList() {
         })}
 
         <h3 className="event-title">📌 Todos los eventos</h3>
-        {events.map((ev) => (
-          <div key={ev.id} className="event-card">
-            <h4>{ev.title}</h4>
-            <p>{ev.description}</p>
-            <p className="date">Fecha: {ev.date}</p>
-            <div className="event-actions">
-              <button className="edit" onClick={() => handleEdit(ev)}>
-                Editar
+        <div style={{ textAlign: 'center', margin: '1.5rem 0' }}>
+          <p style={{ marginBottom: '0.5rem', fontWeight: '500', color: '#444' }}>
+            📅 Filtra tus eventos importantes por fecha
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            <input
+              type="date"
+              value={searchDate}
+              onChange={(e) => setSearchDate(e.target.value)}
+              style={{
+                padding: '0.6rem 1rem',
+                borderRadius: '8px',
+                border: '1px solid #ccc',
+                fontSize: '1rem'
+              }}
+            />
+              <button
+                onClick={() => setSearchDate('')}
+                style={{
+                  padding: '0.6rem 1.2rem',
+                  background: 'linear-gradient(to right, #ff6b6b, #ff8f8f)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '10px',
+                  fontSize: '1rem',
+                  fontWeight: 'bold',
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s ease',
+                }}
+                onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+                onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+              >
+                ✨ Limpiar filtro
               </button>
-              <button className="delete" onClick={() => handleDelete(ev.id)}>
-                Eliminar
-              </button>
-            </div>
-          </div>
-        ))}
 
+          </div>
+        </div>
+        {(() => {
+            const eventosFiltrados = events
+              .filter(ev => !searchDate || ev.date === searchDate)
+              .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            return eventosFiltrados.length === 0 ? (
+              <p style={{ textAlign: 'center', color: '#999', marginTop: '1rem' }}>
+                ❗ No se encontraron eventos para la fecha seleccionada.
+              </p>
+            ) : (
+              eventosFiltrados.map((ev) => (
+                <div key={ev.id} className="event-card">
+                  <h4>{ev.title}</h4>
+                  <p>{ev.description}</p>
+                  <p className="date">Fecha: {ev.date}</p>
+                  <div className="event-actions">
+                    <button className="edit" onClick={() => handleEdit(ev)}>Editar</button>
+                    <button className="delete" onClick={() => handleDelete(ev.id)}>Eliminar</button>
+                  </div>
+                </div>
+              ))
+            );
+          })()}
         <div style={{ textAlign: 'center', marginTop: '2rem' }}>
           <Link to="/" className="go-home-btn">
             Volver a Home
