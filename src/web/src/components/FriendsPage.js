@@ -274,7 +274,7 @@ function FriendsPage() {
 
   return (
     <div className="friends-container">
-      <h1 className="friends-title">Gestionar Amigos</h1>
+      <h1 className="friends-title">Gestionar Pareja</h1>
 
       <div className="friends-search">
         <input

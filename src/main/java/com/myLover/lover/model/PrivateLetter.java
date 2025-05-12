@@ -26,7 +26,6 @@ public class PrivateLetter {
 
     private String secretPassword;
 
-    // ----- getters y setters -----
     public Long getId() {
         return id;
     }

@@ -60,7 +60,7 @@ function HomePage({ onLogout }) {
 
   const buttons = [
     { icon: <FaCalendarAlt />, label: 'Nuestro Amor', route: '/calendar' },
-    { icon: <FaUserFriends />, label: 'Amigos', route: '/friends' },
+    { icon: <FaUserFriends />, label: 'Pareja', route: '/friends' },
     { icon: <FaEnvelopeOpenText />, label: 'Enviar Carta', route: '/send-letter' },
     { icon: <FaInbox />, label: 'Cartas Recibidas', route: '/received-letters' },
     { icon: <FaUser />, label: 'Perfil', route: '/profile' },

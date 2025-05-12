@@ -5,7 +5,7 @@ import com.myLover.lover.model.User;
 import com.myLover.lover.repository.UserRepository;
 import com.myLover.lover.service.UserService;
 import com.myLover.myLover.TestSecurityConfig;
-
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
-
+import java.util.List;
+import java.util.Collections;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -118,4 +119,50 @@ class ProfileControllerTests {
            .andExpect(status().isOk())
            .andExpect(content().string("feliz"));
     }
+
+    @Test
+    void getPartnerStatusOk() throws Exception {
+        User pareja = new User();
+        pareja.setEmail("pareja@mail.com");
+        pareja.setNombre("Lucía");
+        pareja.setStatus("Regular");
+
+        User yo = new User();
+        yo.setEmail("yo@mail.com");
+        yo.setFriends(List.of(pareja));
+
+        when(userService.findUserByEmail("yo@mail.com")).thenReturn(yo);
+
+        mvc.perform(get("/api/profile/partner-status")
+                .with(user("yo@mail.com")))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("Regular"))
+            .andExpect(jsonPath("$.nombre").value("Lucía"))
+            .andExpect(jsonPath("$.email").value("pareja@mail.com"));
+    }
+
+    @Test
+    void getPartnerStatusSinPareja() throws Exception {
+        User yo = new User();
+        yo.setEmail("yo@mail.com");
+        yo.setFriends(Collections.emptyList());
+
+        when(userService.findUserByEmail("yo@mail.com")).thenReturn(yo);
+
+        mvc.perform(get("/api/profile/partner-status")
+                .with(user("yo@mail.com")))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("none"));
+    }
+
+    @Test
+    void getPartnerStatusUsuarioNoExiste() throws Exception {
+        when(userService.findUserByEmail("yo@mail.com")).thenReturn(null);
+
+        mvc.perform(get("/api/profile/partner-status")
+                .with(user("yo@mail.com")))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("none"));
+    }
+    
 }

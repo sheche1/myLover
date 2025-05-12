@@ -44,7 +44,7 @@ class PrivateLetterControllerTests {
 
     @Test
     void sendLetterBadRequest() throws Exception {
-        PrivateLetter bad = new PrivateLetter();             // sin sender/receiver
+        PrivateLetter bad = new PrivateLetter();             
         mvc.perform(post("/api/letters")
                 .with(SecurityMockMvcRequestPostProcessors.user("a@mail.com"))
                 .contentType(MediaType.APPLICATION_JSON)
