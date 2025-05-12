@@ -4,7 +4,17 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+const backend =
+  window.location.hostname === 'localhost'
+    ? 'http://localhost:8080'
+    : 'https://myloverr.onrender.com';        
+const realFetch = window.fetch;
+window.fetch = (url, opts = {}) =>
+  typeof url === 'string' && url.startsWith('/api/')
+    ? realFetch(backend + url, opts)
+    : realFetch(url, opts);
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
   <React.StrictMode>
     <App />
