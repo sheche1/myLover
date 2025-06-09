@@ -1,49 +1,53 @@
-# 💖 Aplicación Web para la Gestión de Relaciones de Pareja
+# 💖 Aplicación Web para la Gestión de Relaciones de Pareja – **myLover**
 
-Una plataforma pensada para fortalecer el vínculo emocional entre parejas, permitiéndoles compartir recuerdos, gestionar eventos importantes, y recibir recomendaciones personalizadas basadas en inteligencia artificial.
+Una plataforma privada diseñada para fortalecer el vínculo emocional entre parejas: permite compartir recuerdos, organizar tareas conjuntas y recibir recomendaciones personalizadas basadas en inteligencia artificial.
+
+---
 
 ## 🧠 ¿Por qué esta app?
 
-En el mundo digital actual, las parejas a menudo carecen de un espacio íntimo donde construir, recordar y soñar juntos. Esta aplicación ofrece una solución digital segura, emocional y personalizada, centrada exclusivamente en fortalecer las relaciones afectivas.
+En la era digital faltan espacios dedicados a las necesidades reales de una relación. **myLover** crea ese refugio seguro, cálido y colaborativo, combinando IA, herramientas de organización y experiencias visuales para que cada pareja construya, recuerde y sueñe junta.
 
 ---
 
 ## 🌟 Funcionalidades principales
 
-### 👫 Gestión de Perfiles (myLover)
-- Crear y editar perfiles de cada miembro de la pareja.
-- Subida de fotos de perfil y personalización de intereses.
+### 👫 Gestión de Perfiles  
+- Creación y edición de perfiles de ambos miembros.  
+- Foto de perfil, intereses y estado emocional.  
 
-### 📅 Calendario de Relación
-- Contador de días desde el inicio de la relación.
-- Agrega y visualiza fechas importantes (aniversarios, cumpleaños, etc.).
+### 📅 Calendario & Línea de Tiempo  
+- Contador automático de días juntos.  
+- Registro y edición de aniversarios, cumpleaños y eventos clave.  
+- Línea de tiempo cronológica con fotos y descripciones.
 
-### 🖼️ Galería de Fotos
-- Subida, clasificación y eliminación de imágenes.
-- Visualización en formato de galería con categorías.
+### 🖼️ Galería de Fotos  
+- Subida multiformato con categorización y filtrado.  
+- Eliminación y reordenado dinámico.  
 
-### 🧾 Lista de Cosas Importantes
-- Registro de eventos clave y objetivos compartidos.
-- Marca eventos como cumplidos o pendientes.
+### 🧾 Lista de Cosas Importantes  
+- Eventos relevantes con estado (pendiente/completado).  
+- Recordatorios programables.
 
-### 🎯 Metas y Sueños
-- Define y realiza seguimiento a metas comunes.
-- Estado de progreso y fechas límite.
+### 🎯 Metas y Sueños  
+- Objetivos compartidos con fechas límite y barra de progreso.  
 
-### ✉️ Cartas y Mensajes Privados
-- Espacio para escribir mensajes íntimos.
-- Visualización organizada y segura.
+### ✉️ Cartas Privadas  
+- Cartas digitales con fecha de desbloqueo y contraseña opcional.  
+- Bandeja de entrada/salida segura.
 
-### 🕰️ Línea de Tiempo
-- Visualiza cronológicamente los hitos de la relación.
+### 💬 Chat en Tiempo Real  
+- Mensajería instantánea vía WebSockets.  
+- Preguntas aleatorias y sugerencias IA integradas.
 
-### 📍 Mapa de Recuerdos
-- Marca ubicaciones significativas con fotos y descripciones.
-- Integración con Google Maps.
+### 🗺️ Mapa de Recuerdos  
+- Marcadores con foto, descripción y fecha sobre Leaflet.  
 
-### 🤖 IA Emocional (Próximamente)
-- Recomendaciones personalizadas basadas en el análisis emocional.
-- Interacción con una API externa de inteligencia artificial.
+### 🤖 IA Emocional  
+- Sugerencias y preguntas basadas en análisis de uso (OpenRouter API).  
+
+### 🔒 Seguridad  
+- Cifrado de datos sensibles y control de acceso por rol.
 
 ---
 
@@ -51,34 +55,41 @@ En el mundo digital actual, las parejas a menudo carecen de un espacio íntimo d
 
 | Tecnología | Descripción |
 |------------|-------------|
-| **Spring Boot** | Backend en Java con arquitectura REST segura. |
-| **React** | Frontend dinámico, responsivo y modular. |
-| **MySQL** | Gestión de base de datos relacional. |
-| **Docker** | Contenedorización para facilitar despliegue. |
-| **JWT + Spring Security** | Seguridad, autenticación y control de acceso. |
-| **TensorFlow.js & scikit-learn** | Análisis emocional mediante IA (API externa). |
-| **GitHub + Git** | Control de versiones y trabajo colaborativo. |
+| **Spring Boot 3** | Backend REST modular y escalable |
+| **React 18 + Vite** | Frontend SPA responsivo |
+| **MySQL 8** | Almacenamiento relacional |
+| **Docker & Docker Compose** | Contenedorización y despliegue |
+| **Spring Security** | Autenticación y autorización |
+| **OpenRouter API** | Recomendaciones emocionales IA |
+| **WebSocket (STOMP)** | Chat instantáneo |
+| **Leaflet** | Mapa interactivo |
+| **JUnit 5 / Mockito / Jest** | Pruebas unitarias e integradas |
+| **JaCoCo 0.8+** | Cobertura > 90 % en CI |
 
 ---
 
-## ⚙️ Instalación y despliegue rápido
+## ⚙️ Instalación rápida
 
-### 🔧 Requisitos
-- Node.js
-- Docker + Docker Compose
+### 🔧 Requisitos previos
+- Docker Desktop (v20+)  
+- Node.js 18+  
 - Java 17+
-- MySQL 8+
 
-### 🚀 Pasos
+### 🚀 Clonado
 ```bash
-git clone https://github.com/tuusuario/nombre-repo.git
-cd nombre-repo
+git clone https://github.com/tuusuario/mylover.git
+cd mylover
+```
 
-# Backend
+**Backend**  
+```bash
 cd backend
 ./mvnw spring-boot:run
+```
 
-# Frontend
-cd frontend
+**Frontend**
+```bash
+cd ../frontend
 npm install
 npm start
+```
